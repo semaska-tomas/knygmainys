@@ -1,0 +1,3 @@
+knygmainys_crawler_homepage:
+    path:     /
+    defaults: { _controller: KnygmainysCrawlerBundle:Default:index }

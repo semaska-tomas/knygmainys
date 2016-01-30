@@ -1,0 +1,4 @@
+services:
+#    knygmainys_main.example:
+#        class: Knygmainys\MainBundle\Example
+#        arguments: ["@service_id", "plain_value", %parameter%]

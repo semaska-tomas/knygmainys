@@ -1,0 +1,23 @@
+homepage:
+    pattern:   /
+    defaults:  { _controller: KnygmainysMainBundle:Main:index }
+
+knygmainys_admin:
+    resource: "@KnygmainysAdminBundle/Resources/config/routing.yml"
+    prefix:   /
+
+knygmainys_crawler:
+    resource: "@KnygmainysCrawlerBundle/Resources/config/routing.yml"
+    prefix:   /
+
+knygmainys_main:
+    resource: "@KnygmainysMainBundle/Resources/config/routing.yml"
+    prefix:   /
+
+knygmainys_books:
+    resource: "@KnygmainysBooksBundle/Resources/config/routing.yml"
+    prefix:   /
+
+knygmainys_user:
+    resource: "@KnygmainysUserBundle/Resources/config/routing.yml"
+    prefix:   /

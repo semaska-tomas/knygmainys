@@ -1,0 +1,3 @@
+knygmainys_books_homepage:
+    path:     /
+    defaults: { _controller: KnygmainysBooksBundle:Default:index }
