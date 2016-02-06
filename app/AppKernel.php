@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new Knygmainys\MainBundle\KnygmainysMainBundle(),
             new Knygmainys\CrawlerBundle\KnygmainysCrawlerBundle(),
             new Knygmainys\AdminBundle\KnygmainysAdminBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
