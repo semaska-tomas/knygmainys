@@ -5,6 +5,7 @@ namespace Knygmainys\UserBundle\Entity;
 use Knygmainys\UserBundle\Entity\City;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -24,17 +25,17 @@ class User extends BaseUser
      *
      * @ORM\Column(name="first_name", type="string", length=35)
      *
-     * @Assert\NotBlank(message="?veskite savo vard?.", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="Įveskite savo vardą.", groups={"Registration", "Profile"})
      * @Assert\Length(
      *     min=3,
      *     max="35",
-     *     minMessage="J?s? ?vestas vardas per trumpas.",
-     *     maxMessage="J?s? ?vestas vardas per ilgas.",
+     *     minMessage="Jūsų ?vestas vardas per trumpas.",
+     *     maxMessage="Jūsų ?vestas vardas per ilgas.",
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
      *        pattern="/[a-zA-Z]/",
-     *        message="Vardas gali b?ti sudarytas tik i� raid�i?.",
+     *        message="Vardas gali būti sudarytas tik iš raidžių.",
      *        groups={"Registration", "Profile"}
      * )
      */
@@ -45,7 +46,7 @@ class User extends BaseUser
      *
      * @ORM\Column(name="last_name", type="string", length=35)
      *
-     * @Assert\NotBlank(message="?veskite savo vard?.", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="Įveskite savo vardą.", groups={"Registration", "Profile"})
      * @Assert\Length(
      *     min=3,
      *     max="35",
@@ -55,7 +56,7 @@ class User extends BaseUser
      * )
      * @Assert\Regex(
      *        pattern="/[a-zA-Z]/",
-     *        message="Pavard? gali b?ti sudaryta tik i� raid�i?.",
+     *        message="Pavardė gali būti sudaryta tik iš raidžių.",
      *        groups={"Registration", "Profile"}
      * )
      */
@@ -71,17 +72,17 @@ class User extends BaseUser
      *
      * @ORM\Column(name="address", type="string", length=255)
      *
-     * @Assert\NotBlank(message="?veskite savo adres?.", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="Įveskite savo adresą.", groups={"Registration", "Profile"})
      * @Assert\Length(
      *     min=10,
      *     max="255",
-     *     minMessage="J?s? ?vestas adresas per trumpas.",
-     *     maxMessage="J?s? ?vestas adresas per ilgas.",
+     *     minMessage="Jūsų įvestas adresas per trumpas.",
+     *     maxMessage="Jūsų įvestas adresas per ilgas.",
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
      *        pattern="/[0-9a-zA-Z.,- ]/",
-     *        message="Adresas gali b?ti sudarytas tik i� raid�i?, skai?i? bei .,- simboli?.",
+     *        message="Adresas gali būti sudarytas tik iš raidžių, skaičių bei .,- simbolių.",
      *        groups={"Registration", "Profile"}
      * )
      */
