@@ -1,37 +1,91 @@
 {% trans_default_domain 'FOSUserBundle' %}
 <div class="register-form-page">
     <form action="{{ path('fos_user_registration_register') }}" {{ form_enctype(form) }} method="POST">
-        <div class="form-group" id="fos_user_registration_form">
-            {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'form.email'|trans } }) }}
-            {{ form_errors(form.email) }}
-            <br>
-            {{ form_widget(form.username, { 'attr': {'class': 'form-control', 'placeholder': 'form.username'|trans } }) }}
-            {{ form_errors(form.username) }}
-            <br>
-            {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control', 'placeholder': 'form.password'|trans } }) }}
-            {{ form_errors(form.plainPassword.first) }}
-            <br>
-            {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'form.password_confirmation'|trans } }) }}
-            {{ form_errors(form.plainPassword.second) }}
-            <br>
-            {{ form_widget(form.firstName, { 'attr': {'class': 'form-control', 'placeholder': 'form.first_name'|trans } }) }}
-            {{ form_errors(form.firstName) }}
-            <br>
-            {{ form_widget(form.lastName, { 'attr': {'class': 'form-control', 'placeholder': 'form.last_name'|trans } }) }}
-            {{ form_errors(form.lastName) }}
-            <br>
-            {{ form_widget(form.city, { 'attr': {'class': 'form-control', 'placeholder': 'form.city'|trans } }) }}
-            {{ form_errors(form.city) }}
-            <br>
-            {{ form_widget(form.address, { 'attr': {'class': 'form-control', 'placeholder': 'form.address'|trans } }) }}
-            {{ form_errors(form.address) }}
-            <br>
-            {{ form_widget(form.postCode, { 'attr': {'class': 'form-control', 'placeholder': 'form.post_code'|trans } }) }}
-            {{ form_errors(form.postCode) }}
-            <br>
+        <div class="form-group registration-form" id="fos_user_registration_form">
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.email) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.email, { 'attr': {'class': 'form-control', 'placeholder': 'form.email'|trans } }) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.username) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.username, { 'attr': {'class': 'form-control', 'placeholder': 'form.username'|trans } }) }}
+                    {{ form_errors(form.username) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.plainPassword.first) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.plainPassword.first, { 'attr': {'class': 'form-control', 'placeholder': 'form.password'|trans } }) }}
+                    {{ form_errors(form.plainPassword.first) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.plainPassword.second) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.plainPassword.second, { 'attr': {'class': 'form-control', 'placeholder': 'form.password_confirmation'|trans } }) }}
+                    {{ form_errors(form.plainPassword.second) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.firstName) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.firstName, { 'attr': {'class': 'form-control', 'placeholder': 'form.first_name'|trans } }) }}
+                    {{ form_errors(form.firstName) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.lastName) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.lastName, { 'attr': {'class': 'form-control', 'placeholder': 'form.last_name'|trans } }) }}
+                    {{ form_errors(form.lastName) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.city) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.city, { 'attr': {'class': 'form-control', 'placeholder': 'form.city'|trans } }) }}
+                    {{ form_errors(form.city) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.address) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.address, { 'attr': {'class': 'form-control', 'placeholder': 'form.address'|trans } }) }}
+                    {{ form_errors(form.address) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4 col-lg-4 registration-label">
+                    {{ form_label(form.postCode) }}
+                </div>
+                <div class="col-sm-4 col-lg-4 registration-input">
+                    {{ form_widget(form.postCode, { 'attr': {'class': 'form-control', 'placeholder': 'form.post_code'|trans } }) }}
+                    {{ form_errors(form.postCode) }}
+                </div>
+            </div>
             {{ form_rest(form) }}
         </div>
-        <div>
+        <div class="col-lg-offset-4 col-sm-offset-4 col-sm-4 col-lg-4 registration-button">
             <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ 'registration.submit'|trans }}">
         </div>
     </form>

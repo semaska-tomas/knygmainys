@@ -50,8 +50,8 @@ class User extends BaseUser
      * @Assert\Length(
      *     min=3,
      *     max="35",
-     *     minMessage="J?s? ?vesta pavard? per trumpa.",
-     *     maxMessage="J?s? ?vesta pavard? per ilga.",
+     *     minMessage="Jūsų įvesta pavardė per trumpa.",
+     *     maxMessage="Jūsų įvesta pavardė per ilga.",
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
@@ -81,7 +81,7 @@ class User extends BaseUser
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
-     *        pattern="/[0-9a-zA-Z.,- ]/",
+     *        pattern="/[0-9a-zA-Z.,\- ]/",
      *        message="Adresas gali būti sudarytas tik iš raidžių, skaičių bei .,- simbolių.",
      *        groups={"Registration", "Profile"}
      * )
@@ -102,7 +102,7 @@ class User extends BaseUser
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
-     *        pattern="/[0-9a-zA-Z.,- ]/",
+     *        pattern="/[0-9a-zA-Z.,\- ]/",
      *        message="Pašto kodas gali būti sudarytas tik iš raidžių, skaičių bei - simbolio.",
      *        groups={"Registration", "Profile"}
      * )

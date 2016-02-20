@@ -1,0 +1,14 @@
+.registration-label {
+  text-align: right;
+  padding-top: 7px; }
+
+.registration-form .row {
+  padding-top: 10px; }
+
+.registration-button {
+  padding-right: 10px;
+  padding-left: 10px; }
+
+@media (max-width: 1200px) {
+  .registration-label {
+    text-align: left; } }
