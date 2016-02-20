@@ -88,6 +88,26 @@ class User extends BaseUser
      */
     protected $address;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="post_code", type="string", length=10)
+     *
+     * @Assert\NotBlank(message="Įveskite savo pašto kodą.", groups={"Registration", "Profile"})
+     * @Assert\Length(
+     *     min=5,
+     *     max="10",
+     *     minMessage="Jūsų įvestas pašto kodas per trumpas.",
+     *     maxMessage="Jūsų įvestas pašto kodas per ilgas.",
+     *     groups={"Registration", "Profile"}
+     * )
+     * @Assert\Regex(
+     *        pattern="/[0-9a-zA-Z.,- ]/",
+     *        message="Pašto kodas gali būti sudarytas tik iš raidžių, skaičių bei - simbolio.",
+     *        groups={"Registration", "Profile"}
+     * )
+     */
+    protected $postCode;
 
     public function __construct()
     {
@@ -104,10 +124,12 @@ class User extends BaseUser
 
     /**
      * @param mixed $id
+     * @return User
      */
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -120,10 +142,12 @@ class User extends BaseUser
 
     /**
      * @param string $firstName
+     * @return User
      */
     public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
+        return $this;
     }
 
     /**
@@ -136,10 +160,12 @@ class User extends BaseUser
 
     /**
      * @param string $lastName
+     * @return User
      */
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
+        return $this;
     }
 
     /**
@@ -152,14 +178,16 @@ class User extends BaseUser
 
     /**
      * @param City $city
+     * @return User
      */
     public function setCity(City $city)
     {
         $this->city = $city;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAddress()
     {
@@ -167,10 +195,30 @@ class User extends BaseUser
     }
 
     /**
-     * @param mixed $address
+     * @param string $address
+     * @return User
      */
     public function setAddress($address)
     {
         $this->address = $address;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostCode()
+    {
+        return $this->postCode;
+    }
+
+    /**
+     * @param string $postCode
+     * @return User
+     */
+    public function setPostCode($postCode)
+    {
+        $this->postCode = $postCode;
+        return $this;
     }
 }

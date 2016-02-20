@@ -13,13 +13,13 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('firstName', 'text', array('label' => 'Vardas'))
-            ->add('lastName', 'text', array('label' => 'Pavard?'))
+            ->add('lastName', 'text', array('label' => 'Pavardė'))
             ->add('city', EntityType::class, array(
                 'class' => 'Knygmainys\UserBundle\Entity\City',
                 'choice_label' => 'name',
             ))
-            ->add('address', 'text', array('label' => 'Adresas'));
-
+            ->add('address', 'text', array('label' => 'Adresas'))
+            ->add('postCode', 'text', array('label' => 'Pašto kodas'));
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -23,6 +23,13 @@
             {{ form_widget(form.city, { 'attr': {'class': 'form-control', 'placeholder': 'form.city'|trans } }) }}
             {{ form_errors(form.city) }}
             <br>
+            {{ form_widget(form.address, { 'attr': {'class': 'form-control', 'placeholder': 'form.address'|trans } }) }}
+            {{ form_errors(form.address) }}
+            <br>
+            {{ form_widget(form.postCode, { 'attr': {'class': 'form-control', 'placeholder': 'form.post_code'|trans } }) }}
+            {{ form_errors(form.postCode) }}
+            <br>
+            {{ form_rest(form) }}
         </div>
         <div>
             <input class="btn btn-lg btn-primary btn-block" type="submit" value="{{ 'registration.submit'|trans }}">
