@@ -12,20 +12,67 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
+    <div class="container-fluid">
         {% block body %}
             {% block header %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% block header_main %}
+                            {% embed 'KnygmainysMainBundle:partials:header/main.html.twig' %}
+                            {% endembed %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-lg-4">
+                        {% block header_sidebar %}
+                            {% embed 'KnygmainysMainBundle:partials:header/sidebar.html.twig' %}
+                            {% endembed %}
+                        {% endblock %}
+                    </div>
+                </div>
             {% endblock %}
-            {% block content %}
+            {% block container %}
+                <div class="row">
+                    <div class="col-lg-8">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-lg-4">
+                        {% block sidebar %}
+                            Sidebar
+                        {% endblock %}
+                    </div>
+                </div>
             {% endblock %}
             {% block footer %}
+                <div class="row">
+                    <div class="col-lg-4">
+                        {% block footer_first %}
+                            {% embed 'KnygmainysMainBundle:partials:footer/first.html.twig' %}
+                            {% endembed %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-lg-4">
+                        {% block footer_second %}
+                            {% embed 'KnygmainysMainBundle:partials:footer/second.html.twig' %}
+                            {% endembed %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-lg-4">
+                        {% block footer_third %}
+                            {% embed 'KnygmainysMainBundle:partials:footer/third.html.twig' %}
+                            {% endembed %}
+                        {% endblock %}
+                    </div>
+                </div>
             {% endblock %}
         {% endblock %}
-        {% block javascripts %}
-            {% javascripts  'assets/js/jquery-1.12.0.min.js'
-                            'assets/js/*'
-            %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
-        {% endblock %}
+    </div>
+    {% block javascripts %}
+        {% javascripts  'assets/js/jquery-1.12.0.min.js'
+                        'assets/js/*'
+        %}
+            <script src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
     </body>
 </html>

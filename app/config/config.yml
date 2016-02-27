@@ -13,6 +13,10 @@ imports:
 parameters:
     locale: lt
 
+services:
+    fos_user.doctrine_registry:
+        alias: doctrine
+
 framework:
     #esi:             ~
     translator:      { fallback: [lt] }
