@@ -15,57 +15,62 @@
     <div class="container-fluid">
         {% block body %}
             {% block header %}
-                <div class="row">
-                    <div class="col-lg-8">
+                <div class="row header-row">
+                    <div class="col-lg-8 header-main">
                         {% block header_main %}
                             {% embed 'KnygmainysMainBundle:partials:header/main.html.twig' %}
                             {% endembed %}
                         {% endblock %}
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 header-sidebar">
                         {% block header_sidebar %}
                             {% embed 'KnygmainysMainBundle:partials:header/sidebar.html.twig' %}
                             {% endembed %}
                         {% endblock %}
                     </div>
                 </div>
-            {% endblock %}
-            {% block container %}
-                <div class="row">
-                    <div class="col-lg-8">
+            {% endblock header %}
+            {% block main_content %}
+                <div class="row main-content-row">
+                    <div class="col-lg-8 main-content-content">
                         {% block content %}
-                        {% endblock %}
+                        {% endblock content %}
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 main-content-sidebar">
                         {% block sidebar %}
-                            Sidebar
-                        {% endblock %}
+                            <div class="panel panel-default">
+                                <div class="panel-heading menu-panel-heading">Menu</div>
+                                <div class="panel-body">
+                                    Menu content
+                                </div>
+                            </div>
+                        {% endblock sidebar %}
                     </div>
                 </div>
-            {% endblock %}
+            {% endblock main_content %}
             {% block footer %}
-                <div class="row">
-                    <div class="col-lg-4">
+                <div class="row footer-row">
+                    <div class="col-lg-4 footer-col-first">
                         {% block footer_first %}
                             {% embed 'KnygmainysMainBundle:partials:footer/first.html.twig' %}
                             {% endembed %}
-                        {% endblock %}
+                        {% endblock footer_first %}
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 footer-col-second">
                         {% block footer_second %}
                             {% embed 'KnygmainysMainBundle:partials:footer/second.html.twig' %}
                             {% endembed %}
-                        {% endblock %}
+                        {% endblock footer_second %}
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-lg-4 footer-col-third">
                         {% block footer_third %}
                             {% embed 'KnygmainysMainBundle:partials:footer/third.html.twig' %}
                             {% endembed %}
-                        {% endblock %}
+                        {% endblock footer_third %}
                     </div>
                 </div>
-            {% endblock %}
-        {% endblock %}
+            {% endblock footer %}
+        {% endblock body %}
     </div>
     {% block javascripts %}
         {% javascripts  'assets/js/jquery-1.12.0.min.js'
