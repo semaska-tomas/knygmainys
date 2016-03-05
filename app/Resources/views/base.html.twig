@@ -12,8 +12,8 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-    <div class="container-fluid">
-        {% block body %}
+    {% block body %}
+        <div class="container-fluid body-container">
             {% block header %}
                 <div class="row header-row">
                     <div class="col-lg-8 header-main">
@@ -48,6 +48,8 @@
                     </div>
                 </div>
             {% endblock main_content %}
+        </div>
+        <div class="container-fluid footer-container">
             {% block footer %}
                 <div class="row footer-row">
                     <div class="col-lg-4 footer-col-first">
@@ -70,8 +72,8 @@
                     </div>
                 </div>
             {% endblock footer %}
-        {% endblock body %}
-    </div>
+        </div>
+    {% endblock body %}
     {% block javascripts %}
         {% javascripts  'assets/js/jquery-1.12.0.min.js'
                         'assets/js/*'

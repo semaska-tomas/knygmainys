@@ -1,5 +1,8 @@
 /* background colors */
 /* text colors */
+.body-container {
+  max-width: 1170px; }
+
 .header-row {
   height: 180px; }
 
@@ -19,9 +22,13 @@
   background-color: #29abe0;
   color: #FFF; }
 
+.footer-container {
+  background-color: #3e3f3a; }
+
 .footer-row {
   height: 560px;
-  background-color: #3e3f3a;
+  max-width: 1170px;
+  margin: 15px auto;
   color: #FFF; }
 
 .registration-label {
