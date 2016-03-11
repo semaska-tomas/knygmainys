@@ -36,9 +36,27 @@
                     <div class="col-lg-4 col-lg-push-8 main-content-sidebar">
                         {% block sidebar %}
                             <div class="panel panel-default">
-                                <div class="panel-heading menu-panel-heading">Menu</div>
+                                <div class="panel-heading menu-panel-heading-1">Menu</div>
                                 <div class="panel-body">
-                                    Menu content
+                                    <ul class="custom-list-group">
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading menu-panel-heading-2">Menu</div>
+                                <div class="panel-body">
+                                    <ul class="custom-list-group">
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                        <li>Menu item</li>
+                                    </ul>
                                 </div>
                             </div>
                         {% endblock sidebar %}
@@ -53,19 +71,19 @@
         <div class="container-fluid footer-container">
             {% block footer %}
                 <div class="row footer-row">
-                    <div class="col-lg-4 footer-col-first">
+                    <div class="col-lg-4 footer-col footer-col-first">
                         {% block footer_first %}
                             {% embed 'KnygmainysMainBundle:partials:footer/first.html.twig' %}
                             {% endembed %}
                         {% endblock footer_first %}
                     </div>
-                    <div class="col-lg-4 footer-col-second">
+                    <div class="col-lg-4 footer-col footer-col-second">
                         {% block footer_second %}
                             {% embed 'KnygmainysMainBundle:partials:footer/second.html.twig' %}
                             {% endembed %}
                         {% endblock footer_second %}
                     </div>
-                    <div class="col-lg-4 footer-col-third">
+                    <div class="col-lg-4 footer-col footer-col-third">
                         {% block footer_third %}
                             {% embed 'KnygmainysMainBundle:partials:footer/third.html.twig' %}
                             {% endembed %}

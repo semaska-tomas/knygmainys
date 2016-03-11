@@ -17,12 +17,10 @@ body {
 
 .header-main-logo {
   height: 180px;
-  padding: 10px 20px; }
+  padding: 10px 55px; }
 
 .header-main-menu {
-  height: 60px;
-  float: right;
-  padding-right: 30px; }
+  height: 60px; }
 
 .menu-list {
   list-style-type: none; }
@@ -51,25 +49,37 @@ body {
   -webkit-border-radius: 0px;
   -moz-border-radius: 0px;
   border-radius: 0px;
-  border: none; }
+  border: none;
+  margin-bottom: 0px; }
 
-.menu-panel-heading,
-.panel-default > .menu-panel-heading {
+.menu-panel-heading-1,
+.panel-default > .menu-panel-heading-1 {
   background-color: #29abe0;
+  color: #FFF; }
+
+.menu-panel-heading-2,
+.panel-default > .menu-panel-heading-2 {
+  background-color: #f47c3c;
   color: #FFF; }
 
 .footer-container {
   background-color: #3e3f3a; }
 
 .footer-row {
-  min-height: 560px;
+  min-height: 360px;
   max-width: 1170px;
   margin: 15px auto;
   color: #FFF; }
 
+.footer-col {
+  padding: 10px 40px; }
+
 .custom-list-group {
   list-style: none;
-  padding: 5px; }
+  padding: 5px 5px 5px 0px; }
+
+.custom-list-group li span {
+  padding-right: 10px; }
 
 .registration-label {
   text-align: right;
