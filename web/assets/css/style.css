@@ -1,6 +1,9 @@
 /* background colors */
 /* text colors */
 /* height */
+body {
+  font-family: 'Roboto', sans-serif; }
+
 .body-container {
   max-width: 1170px; }
 
@@ -12,11 +15,43 @@
   color: #FFF;
   background-color: #93c54b; }
 
+.header-main-logo {
+  height: 180px;
+  padding: 10px 20px; }
+
+.header-main-menu {
+  height: 60px;
+  float: right;
+  padding-right: 30px; }
+
+.menu-list {
+  list-style-type: none; }
+
+.menu-list li {
+  display: inline;
+  padding-right: 10px;
+  font-size: 16px; }
+
 .header-sidebar {
-  height: 100%; }
+  color: #FFF;
+  background-color: #3e3f3a;
+  min-height: 240px; }
 
 .main-content-row {
   min-height: 600px; }
+
+.main-content-content {
+  padding: 20px 15px; }
+
+.main-content-sidebar {
+  padding: 0px 0px; }
+
+.main-content-sidebar .panel,
+.main-content-sidebar .panel-heading {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border: none; }
 
 .menu-panel-heading,
 .panel-default > .menu-panel-heading {
@@ -32,6 +67,10 @@
   margin: 15px auto;
   color: #FFF; }
 
+.custom-list-group {
+  list-style: none;
+  padding: 5px; }
+
 .registration-label {
   text-align: right;
   padding-top: 7px; }
@@ -42,6 +81,15 @@
 .registration-button {
   padding-right: 10px;
   padding-left: 10px; }
+
+.login-sidebar {
+  padding-top: 30px; }
+
+.remember-me-checkbox {
+  padding: 8px 0px 5px 0px; }
+
+.remember-me-checkbox label {
+  padding-left: 5px; }
 
 @media (max-width: 1200px) {
   .registration-label {
