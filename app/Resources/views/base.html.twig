@@ -32,11 +32,7 @@
             {% endblock header %}
             {% block main_content %}
                 <div class="row main-content-row">
-                    <div class="col-lg-8 main-content-content">
-                        {% block content %}
-                        {% endblock content %}
-                    </div>
-                    <div class="col-lg-4 main-content-sidebar">
+                    <div class="col-lg-4 col-lg-push-8 main-content-sidebar">
                         {% block sidebar %}
                             <div class="panel panel-default">
                                 <div class="panel-heading menu-panel-heading">Menu</div>
@@ -45,6 +41,10 @@
                                 </div>
                             </div>
                         {% endblock sidebar %}
+                    </div>
+                    <div class="col-lg-8 col-lg-pull-4 main-content-content">
+                        {% block content %}
+                        {% endblock content %}
                     </div>
                 </div>
             {% endblock main_content %}
