@@ -1,0 +1,25 @@
+/* background colors */
+/* text colors */
+/* height */
+.panel,
+.panel-heading {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border: none;
+  margin-bottom: 0px; }
+
+.menu-panel-heading-1,
+.panel-default > .menu-panel-heading-1,
+.menu-panel-heading-2,
+.panel-default > .menu-panel-heading-2 {
+  background-color: #29abe0;
+  color: #FFF; }
+
+.menu-panel-heading-2,
+.panel-default > .menu-panel-heading-2 {
+  background-color: #e93c62; }
+
+.main-content-sidebar .panel-body {
+  background-color: #fff;
+  color: #000; }

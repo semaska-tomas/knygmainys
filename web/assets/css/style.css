@@ -2,77 +2,35 @@
 /* text colors */
 /* height */
 body {
-  font-family: 'Roboto', sans-serif; }
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  background: url("http://subtlepatterns2015.subtlepatterns.netdna-cdn.com/patterns/skulls.png");
+  font-weight: 300; }
 
 .body-container {
   max-width: 1170px; }
 
+.spacer {
+  height: 35px; }
+
 .header-row {
-  min-height: 240px; }
-
-.header-main {
-  min-height: 240px;
-  color: #FFF;
-  background-color: #93c54b; }
-
-.header-main-logo {
-  height: 180px;
-  padding: 10px 55px; }
-
-.header-main-menu {
-  height: 60px; }
-
-.menu-list {
-  list-style-type: none; }
-
-.menu-list li {
-  display: inline;
-  padding-right: 10px;
-  font-size: 16px; }
-
-.header-sidebar {
-  color: #FFF;
-  background-color: #3e3f3a;
   min-height: 240px; }
 
 .main-content-row {
   min-height: 600px; }
 
 .main-content-content {
-  padding: 20px 15px; }
+  background-color: #ffffff;
+  padding: 0px; }
 
 .main-content-sidebar {
   padding: 0px 0px; }
-
-.main-content-sidebar .panel,
-.main-content-sidebar .panel-heading {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  border: none;
-  margin-bottom: 0px; }
-
-.menu-panel-heading-1,
-.panel-default > .menu-panel-heading-1 {
-  background-color: #29abe0;
-  color: #FFF; }
-
-.menu-panel-heading-2,
-.panel-default > .menu-panel-heading-2 {
-  background-color: #f47c3c;
-  color: #FFF; }
-
-.footer-container {
-  background-color: #3e3f3a; }
 
 .footer-row {
   min-height: 360px;
   max-width: 1170px;
   margin: 15px auto;
   color: #FFF; }
-
-.footer-col {
-  padding: 10px 40px; }
 
 .custom-list-group {
   list-style: none;
@@ -93,13 +51,17 @@ body {
   padding-left: 10px; }
 
 .login-sidebar {
-  padding-top: 30px; }
+  padding-top: 20px; }
 
 .remember-me-checkbox {
-  padding: 8px 0px 5px 0px; }
+  padding: 9px 0px 5px 0px; }
 
 .remember-me-checkbox label {
-  padding-left: 5px; }
+  padding-left: 5px;
+  font-weight: 500; }
+
+.btn {
+  font-size: 15px; }
 
 @media (max-width: 1200px) {
   .registration-label {

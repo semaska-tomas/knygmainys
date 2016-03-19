@@ -23,7 +23,7 @@ class City
      *
      * @ORM\Column(name="name", type="string", length=35)
      *
-     * @Assert\NotBlank(message="Pasirinkit? miest?.")
+     * @Assert\NotBlank(message="Pasirinkitę miestą.")
      */
     protected $name;
 

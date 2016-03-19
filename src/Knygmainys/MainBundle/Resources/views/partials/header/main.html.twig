@@ -1,22 +1,21 @@
 <div class="row header-main-logo">
-    <h1>Knygmainys.lt</h1>
+    <h1 class="header-logo">Knygmainys.lt</h1>
+    <h4 class="header-slogan">Surask savo senai knygai naujus namus!</h4>
 </div>
 <div class="row header-main-menu">
     <div class="col-lg-9">
         <ul class="menu-list">
-            <li>Pradžia</li>
-            <li>/</li>
-            <li>Knygos</li>
-            <li>/</li>
-            <li>Profilis</li>
-            <li>/</li>
-            <li>Apie</li>
+            <li><span class="glyphicon glyphicon-triangle-right"></span></li>
+            <li class="menu-link"><a href="{{ path("homepage") }}">Pradžia</a></li>
+            <li><span class="glyphicon glyphicon-triangle-right"></span></li>
+            <li class="menu-link">Apie</li>
+            <li><span class="glyphicon glyphicon-triangle-right"></span></li>
+            <li class="menu-link">Kontaktai</li>
         </ul>
     </div>
     <div class="col-lg-3">
         <ul class="menu-list">
-            <li>LT</li>
-            <li>EN</li>
+            <li><span class="glyphicon glyphicon-time"></span> {{ "now"|date("Y-m-d") }}</li>
         </ul>
     </div>
 </div>

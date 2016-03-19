@@ -102,7 +102,7 @@ class User extends BaseUser
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(
-     *        pattern="/[0-9a-zA-Z.,\- ]/",
+     *        pattern="/[0-9a-zA-Z\- ]/",
      *        message="Pašto kodas gali būti sudarytas tik iš raidžių, skaičių bei - simbolio.",
      *        groups={"Registration", "Profile"}
      * )

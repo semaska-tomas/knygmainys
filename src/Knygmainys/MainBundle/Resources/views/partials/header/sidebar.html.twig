@@ -1,5 +1,18 @@
 {% if app.user %}
-    <p>Hello, {{ app.user.firstName }}</p>
+    <div class="header-sidebar-user">
+        <ul>
+            <li><span class="glyphicon glyphicon-user"></span> {{ app.user.firstName }} {{ app.user.lastName }}</li>
+            <li>Taškai: </li>
+            <li>
+                <ul>
+                    <li>Turimi: 0</li>
+                    <li>Rezervuoti: 0</li>
+                </ul>
+            </li>
+            <li>Mano profilis</li>
+            <li>Pranešimai</li>
+        </ul>
+    </div>
 {% else %}
     {{ render(controller('FOSUserBundle:Security:login')) }}
 {% endif %}
