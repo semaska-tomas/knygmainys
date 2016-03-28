@@ -29,8 +29,8 @@ class User extends BaseUser
      * @Assert\Length(
      *     min=3,
      *     max="35",
-     *     minMessage="Jūsų ?vestas vardas per trumpas.",
-     *     maxMessage="Jūsų ?vestas vardas per ilgas.",
+     *     minMessage="Jūsų įvestas vardas per trumpas.",
+     *     maxMessage="Jūsų įvestas vardas per ilgas.",
      *     groups={"Registration", "Profile"}
      * )
      * @Assert\Regex(

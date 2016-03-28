@@ -63,6 +63,10 @@ body {
 .btn {
   font-size: 15px; }
 
+.form-label {
+  padding-top: 15px;
+  padding-bottom: 10px; }
+
 @media (max-width: 1200px) {
   .registration-label {
     text-align: left; } }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Knygmainys\BookBundle\Entity;
+namespace Knygmainys\BooksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,7 +34,7 @@ class Category
      *
      * @Assert\NotBlank(message="Įveskite kategorijos aprašymą.")
      * @Assert\Length(
-     *     min=5,
+     *     min="15",
      *     max="255",
      *     minMessage="Jūsų įvestas aprašymas per trumpas.",
      *     maxMessage="Jūsų įvestas aprašymas per ilgas."

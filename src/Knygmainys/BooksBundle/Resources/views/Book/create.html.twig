@@ -1,0 +1,139 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/tools/typeahead.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/tools/bootstrap-typeahead.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    {% if customErrors is empty %}
+        <div class="panel-heading"><h1>Pridėti knygą</h1></div>
+            {{ form_start(form, {'role':'form'}) }}
+            <div class="panel-body">
+                {{ form_start(form, {'role':'form'}) }}
+
+                    {{ form_label(form.book.title) }}
+                    {{ form_errors(form.book.title) }}
+                    <div id="titleSearch">
+                        {{ form_widget(form.book.title, {'attr': {'class': 'form-control typeahead', 'placeholder':'Pavadinimas', 'autocomplete': 'off'}}) }}
+
+                    </div>
+
+                    {{ form_label(form.book.description) }}
+                    {{ form_errors(form.book.description) }}
+                    {{ form_widget(form.book.description, {'attr': {'class': 'form-control', 'placeholder':'Knygos aprašymas'}}) }}
+
+                    {{ form_label(form.book.author) }}
+                    {{ form_errors(form.book.author) }}
+                    {{ form_widget(form.book.author, {'attr': {'class': 'form-control'}}) }}
+
+                    {{ form_label(form.book.category) }}
+                    {{ form_errors(form.book.category) }}
+                    {{ form_widget(form.book.category, {'attr': {'class': 'form-control'}}) }}
+
+                    {{ form_label(form.release.isbn) }}
+                    {{ form_errors(form.release.isbn) }}
+                    {{ form_widget(form.release.isbn, {'attr': {'class': 'form-control', 'placeholder':'ISBN'}}) }}
+
+                    {{ form_label(form.release.year) }}
+                    {{ form_errors(form.release.year) }}
+                    {{ form_widget(form.release.year, {'attr': {'class': 'form-control', 'placeholder':'Išleidimo metai'}}) }}
+
+                    {{ form_label(form.release.publishingHouse) }}
+                    {{ form_errors(form.release.publishingHouse) }}
+                    {{ form_widget(form.release.publishingHouse, {'attr': {'class': 'form-control', 'placeholder':'Leidykla'}}) }}
+
+                    {{ form_label(form.release.cover) }}
+                    {{ form_errors(form.release.cover) }}
+                    {{ form_widget(form.release.cover) }}<br>
+
+                {{ form_end(form) }}
+            </div>
+        </div>
+    {% else %}
+         <div class="panel-heading"><h1>Pridėti knygos nepavyko!</h1></div>
+            <div class="panel-body">
+                {% for error in customErrors %}
+                    <div><h3>{{ error.name }}</h3></div>
+                    <div><h4>{{ error.message }}</h4></div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var engine = new Bloodhound({
+                datumTokenizer: function (datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.title);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '{{ url('knygmainys_books_search_book_title')}}',
+                    prepare: function (query, settings) {
+                        settings.type = "POST";
+                        settings.contentType = "application/json; charset=UTF-8";
+                        settings.data = query;
+                        return settings;
+                    },
+                    filter: function(data) {
+                        return $.map(data, function(book) {
+                            return {
+                                id: book.id,
+                                title: book.title
+                            }
+                        });
+                    }
+                }
+            });
+            engine.initialize();
+
+            $('#titleSearch .typeahead').typeahead(
+                    {
+                        hint: true,
+                        highlight: true,
+                        minLength: 2,
+                        limit:10,
+                        classNames: {
+                            open: 'is-open',
+                            empty: 'is-empty',
+                            cursor: 'is-active',
+                            suggestion: 'Typeahead-suggestion',
+                            selectable: 'Typeahead-selectable'
+                        }
+                    },
+                    {
+                        name: 'engine',
+                        displayKey: 'title',
+                        source: engine.ttAdapter(),
+                        templates: {
+                            empty: [
+                                '<div class="empty-message hint-large">',
+                                'Pagal šią užklausą vartotojų rasti nepavyko.',
+                                '</div>'
+                            ].join('\n'),
+                            {% verbatim %}
+                            suggestion: Handlebars.compile('<div class="hint-large">' +
+                             '<a class="pull-left" href="#">' +
+                                '<img role="button" alt="Image" class="media-object img-rounded author-img thumb16" src= "{{profilePicture}}">' +
+                             '</a><div class="media-body tt-hint-body">{{fullName}} <small> {{email}} </small> </div>' +
+                             '</div>')
+                            {% endverbatim %}
+                        }
+                    });
+            $('.typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
+            $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+            $('#userSearch').bind('typeahead:selected', function(obj, datum, name) {
+                $('#basketplanner_teambundle_invite_user option:selected').val(datum.id);
+                $('#basketplanner_teambundle_invite_user option:selected').text(datum.title);
+            });
+        });
+    </script>
+{% endblock %}

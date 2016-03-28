@@ -1,3 +1,11 @@
 knygmainys_books_homepage:
     path:     /
-    defaults: { _controller: KnygmainysBooksBundle:Default:index }
+    defaults: { _controller: KnygmainysBooksBundle:Book:index }
+
+knygmainys_books_create:
+    path:     /prideti
+    defaults: { _controller: KnygmainysBooksBundle:Book:create }
+
+knygmainys_books_search_book_title:
+    path:     /ieskoti-knygos-pavadinimo
+    defaults: { _controller: KnygmainysBooksBundle:Book:searchBookTitle }

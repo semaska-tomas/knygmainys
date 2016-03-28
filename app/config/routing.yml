@@ -4,11 +4,11 @@ homepage:
 
 knygmainys_admin:
     resource: "@KnygmainysAdminBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /admin
 
 knygmainys_crawler:
     resource: "@KnygmainysCrawlerBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /crawler
 
 knygmainys_main:
     resource: "@KnygmainysMainBundle/Resources/config/routing.yml"
@@ -16,11 +16,11 @@ knygmainys_main:
 
 knygmainys_books:
     resource: "@KnygmainysBooksBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /knygos
 
 knygmainys_user:
     resource: "@KnygmainysUserBundle/Resources/config/routing.yml"
-    prefix:   /
+    prefix:   /vartotojas
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"

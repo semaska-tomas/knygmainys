@@ -69,6 +69,7 @@
                 {% endblock main_content %}
             </div>
         </div>
+        <div class="spacer"></div>
         <div class="container-fluid footer-container">
             {% block footer %}
                 <div class="row footer-row">
@@ -100,6 +101,8 @@
         %}
             <script src="{{ asset_url }}"></script>
         {% endjavascripts %}
+    {% endblock %}
+    {% block bottomScripts %}
     {% endblock %}
     </body>
 </html>

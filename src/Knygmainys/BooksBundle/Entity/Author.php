@@ -1,6 +1,6 @@
 <?php
 
-namespace Knygmainys\BookBundle\Entity;
+namespace Knygmainys\BooksBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -87,5 +87,10 @@ class Author
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
+    }
+
+    public function getFullName()
+    {
+        return $this->firstName.' '.$this->lastName;
     }
 }
