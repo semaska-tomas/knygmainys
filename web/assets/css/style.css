@@ -32,9 +32,22 @@ body {
   margin: 15px auto;
   color: #FFF; }
 
-.custom-list-group {
+.custom-list-group, #authors {
   list-style: none;
   padding: 5px 5px 5px 0px; }
+
+#authors li:before {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'Glyphicons Halflings';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 0 10px;
+  content: "\e014"; }
 
 .custom-list-group li span {
   padding-right: 10px; }
@@ -64,8 +77,8 @@ body {
   font-size: 15px; }
 
 .form-label {
-  padding-top: 15px;
-  padding-bottom: 10px; }
+  padding-top: 10px;
+  padding-bottom: 5px; }
 
 @media (max-width: 1200px) {
   .registration-label {

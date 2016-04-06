@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  * @ORM\Table(name="books")
+ * @ORM\Entity(repositoryClass="Knygmainys\BooksBundle\Repository\BookRepository")
  */
 class Book
 {

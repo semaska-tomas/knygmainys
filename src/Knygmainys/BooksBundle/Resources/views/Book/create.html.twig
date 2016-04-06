@@ -11,66 +11,53 @@
 {% endblock %}
 
 {% block content %}
-    {% if customErrors is empty %}
-        <div class="panel-heading"><h1>Pridėti knygą</h1></div>
+    <div class="panel-heading"><h1>Pridėti knygą</h1></div>
+        {{ form_start(form, {'role':'form'}) }}
+        <div class="panel-body">
             {{ form_start(form, {'role':'form'}) }}
-            <div class="panel-body">
-                {{ form_start(form, {'role':'form'}) }}
 
-                    {{ form_label(form.book.title) }}
-                    {{ form_errors(form.book.title) }}
-                    <div id="titleSearch">
-                        {{ form_widget(form.book.title, {'attr': {'class': 'form-control typeahead', 'placeholder':'Pavadinimas', 'autocomplete': 'off'}}) }}
+                {{ form_label(form.title) }}
+                <div class="book-exist" style="display: none;">
+                    <p>Ši knygą jau egzistuoja duomenų bazėje. Norėdami redaguoti knygą ar pridėti naują knygos leidimą pasirinkite atitinkamą veiksmą knygos peržiūros puslapyje.</p>
+                </div>
+                {{ form_errors(form.title) }}
+                <div id="titleSearch">
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control book-title typeahead', 'placeholder':'Pavadinimas', 'autocomplete': 'off'}}) }}
+                </div>
 
-                    </div>
+                {{ form_label(form.description) }}
+                {{ form_errors(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control book-description', 'placeholder':'Knygos aprašymas'}}) }}
+                <br>
+                {{ form_label(form.author) }}
+                {{ form_errors(form.author) }}
+                <div id="authorSearch">
+                    <input spellcheck="false" class="form-control book-author-search typeahead tt-input" placeholder="Autorių paieška" autocomplete="off" type="text">
+                </div>
 
-                    {{ form_label(form.book.description) }}
-                    {{ form_errors(form.book.description) }}
-                    {{ form_widget(form.book.description, {'attr': {'class': 'form-control', 'placeholder':'Knygos aprašymas'}}) }}
+                <ul id="authors">
 
-                    {{ form_label(form.book.author) }}
-                    {{ form_errors(form.book.author) }}
-                    {{ form_widget(form.book.author, {'attr': {'class': 'form-control'}}) }}
+                </ul>
+                {{ form_widget(form.author, {'attr': {'class': 'form-control book-author', 'style': 'display:block;', 'autocomplete' :'off'}}) }}
 
-                    {{ form_label(form.book.category) }}
-                    {{ form_errors(form.book.category) }}
-                    {{ form_widget(form.book.category, {'attr': {'class': 'form-control'}}) }}
-
-                    {{ form_label(form.release.isbn) }}
-                    {{ form_errors(form.release.isbn) }}
-                    {{ form_widget(form.release.isbn, {'attr': {'class': 'form-control', 'placeholder':'ISBN'}}) }}
-
-                    {{ form_label(form.release.year) }}
-                    {{ form_errors(form.release.year) }}
-                    {{ form_widget(form.release.year, {'attr': {'class': 'form-control', 'placeholder':'Išleidimo metai'}}) }}
-
-                    {{ form_label(form.release.publishingHouse) }}
-                    {{ form_errors(form.release.publishingHouse) }}
-                    {{ form_widget(form.release.publishingHouse, {'attr': {'class': 'form-control', 'placeholder':'Leidykla'}}) }}
-
-                    {{ form_label(form.release.cover) }}
-                    {{ form_errors(form.release.cover) }}
-                    {{ form_widget(form.release.cover) }}<br>
-
-                {{ form_end(form) }}
-            </div>
+                {{ form_label(form.category) }}
+                {{ form_errors(form.category) }}
+                {{ form_widget(form.category, {'attr': {'class': 'form-control book-category'}}) }}
+                <br>
+            {{ form_end(form) }}
         </div>
-    {% else %}
-         <div class="panel-heading"><h1>Pridėti knygos nepavyko!</h1></div>
-            <div class="panel-body">
-                {% for error in customErrors %}
-                    <div><h3>{{ error.name }}</h3></div>
-                    <div><h4>{{ error.message }}</h4></div>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
+    </div>
 {% endblock %}
 
 {% block bottomScripts %}
     <script type="text/javascript">
         $(document).ready(function () {
-            var engine = new Bloodhound({
+            $('.book-author-search').prop('disabled', false);
+            $('.book-description').prop('disabled', false);
+            $('.book-category').prop('disabled', false);
+            $("#knygmainys_books_book_save").attr("disabled", false);
+
+            var titleEngine = new Bloodhound({
                 datumTokenizer: function (datum) {
                     return Bloodhound.tokenizers.whitespace(datum.title);
                 },
@@ -84,6 +71,11 @@
                         return settings;
                     },
                     filter: function(data) {
+                        $('.book-author-search').prop('disabled', false);
+                        $('.book-description').prop('disabled', false);
+                        $('.book-category').prop('disabled', false);
+                        $("#knygmainys_books_book_save").attr("disabled", false);
+                        bookMessage('hide');
                         return $.map(data, function(book) {
                             return {
                                 id: book.id,
@@ -93,10 +85,38 @@
                     }
                 }
             });
-            engine.initialize();
+
+            var authorEngine = new Bloodhound({
+                datumTokenizer: function (datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.firstName);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '{{ url('knygmainys_books_search_book_author')}}',
+                    prepare: function (query, settings) {
+                        settings.type = "POST";
+                        settings.contentType = "application/json; charset=UTF-8";
+                        settings.data = query;
+                        return settings;
+                    },
+                    filter: function(data) {
+                        return $.map(data, function(author) {
+                            return {
+                                id: author.id,
+                                firstName: author.firstName,
+                                lastName: author.lastName
+                            }
+                        });
+                    }
+                }
+            });
+
+            titleEngine.initialize();
+            authorEngine.initialize();
 
             $('#titleSearch .typeahead').typeahead(
                     {
+                        name: 'title',
                         hint: true,
                         highlight: true,
                         minLength: 2,
@@ -110,30 +130,114 @@
                         }
                     },
                     {
-                        name: 'engine',
+                        name: 'titleEngine',
                         displayKey: 'title',
-                        source: engine.ttAdapter(),
+                        source: titleEngine.ttAdapter(),
                         templates: {
                             empty: [
                                 '<div class="empty-message hint-large">',
-                                'Pagal šią užklausą vartotojų rasti nepavyko.',
+                                'Tokios knygos mūsų duombazėje nėra, galite sekmingai pridėti šią knygą.',
                                 '</div>'
                             ].join('\n'),
                             {% verbatim %}
                             suggestion: Handlebars.compile('<div class="hint-large">' +
-                             '<a class="pull-left" href="#">' +
-                                '<img role="button" alt="Image" class="media-object img-rounded author-img thumb16" src= "{{profilePicture}}">' +
-                             '</a><div class="media-body tt-hint-body">{{fullName}} <small> {{email}} </small> </div>' +
+                                '<div class="media-body tt-hint-body">{{title}}</div>' +
                              '</div>')
                             {% endverbatim %}
                         }
                     });
-            $('.typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
-            $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
-            $('#userSearch').bind('typeahead:selected', function(obj, datum, name) {
-                $('#basketplanner_teambundle_invite_user option:selected').val(datum.id);
-                $('#basketplanner_teambundle_invite_user option:selected').text(datum.title);
+            $('#titleSearch .typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
+            $('#titleSearch .typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+            $('#titleSearch').bind('typeahead:selected', function(obj, datum, name) {
+                $('.book-author-search').prop('disabled', true);
+                $('.book-description').prop('disabled', true);
+                $('.book-category').prop('disabled', true);
+                $("#knygmainys_books_book_save").attr("disabled", true);
+                bookMessage('show');
             });
+
+            $('#authorSearch .typeahead').typeahead(
+                    {
+                        name: 'author',
+                        hint: true,
+                        highlight: true,
+                        minLength: 2,
+                        limit:10,
+                        classNames: {
+                            open: 'is-open',
+                            empty: 'is-empty',
+                            cursor: 'is-active',
+                            suggestion: 'Typeahead-suggestion',
+                            selectable: 'Typeahead-selectable'
+                        }
+                    },
+                    {
+                        name: 'authorEngine',
+                        displayKey: 'title',
+                        source: authorEngine.ttAdapter(),
+                        templates: {
+                            empty: [
+                                '<div class="empty-message hint-large">',
+                                'Pagal šią užklausą autorių rasti nepavyko.',
+                                '</div>'
+                            ].join('\n'),
+                            {% verbatim %}
+                            suggestion: Handlebars.compile('<div class="hint-large">' +
+                                '<div class="media-body tt-hint-body">{{firstName}} {{lastName}}</div>' +
+                             '</div>')
+                            {% endverbatim %}
+                        }
+                    });
+
+            $('#authorSearch').bind('typeahead:selected', function(obj, datum, name) {
+                var ul = document.getElementById("authors");
+                var li = document.createElement("li");
+                var item = obj;
+
+                if (datum.id == 0) {
+                    li.appendChild(document.createTextNode(datum.lastName));
+                    item.value = datum.id + '_' + datum.lastName;
+                    item.text = datum.lastName;
+                } else {
+                    li.appendChild(document.createTextNode(datum.firstName + ' ' + datum.lastName));
+                    item.value = datum.id;
+                    item.text = datum.firstName + ' ' + datum.lastName;
+                }
+
+                var values = $('#knygmainys_books_book_author').val();
+                if (values == null || values == '') {
+                    var array = {};
+                    array[ item.value ] = item.text;
+                    var newValues = JSON.stringify(array);
+                    $('#knygmainys_books_book_author').val(newValues);
+                } else {
+                    var array = JSON.parse(values);
+                    array[item.value] = item.text;
+                    var newValues = JSON.stringify(array);
+                    $('#knygmainys_books_book_author').val(newValues);
+                }
+
+                li.setAttribute('id', item.value);
+                li.setAttribute('class', 'author-list-item');
+                ul.appendChild(li);
+            });
+
+            $('#authors').on('click', '.author-list-item', function(event) {
+                $(event.target).remove();
+                var values = $('#knygmainys_books_book_author').val();
+                var array = JSON.parse(values);
+                delete array[ $(this).attr('id') ];
+                var newValues = JSON.stringify(array);
+                $('#knygmainys_books_book_author').val(newValues);
+            });
+
+            function bookMessage(action) {
+                if (action == 'show') {
+                    $('.book-exist').slideDown();
+                } else {
+                    $('.book-exist').slideUp();
+                }
+            }
         });
     </script>
 {% endblock %}

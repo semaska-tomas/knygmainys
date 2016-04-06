@@ -7,6 +7,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Doctrine\ORM\EntityRepository;
 
 class BookFormType extends AbstractType
 {
@@ -25,18 +27,20 @@ class BookFormType extends AbstractType
                 'label' => 'Aprašymas',
                 'label_attr' => array('class' => 'form-label')
             ))
-            ->add('author', 'entity', array(
+            ->add('author', 'hidden', array(
                 'label' => 'Autorius',
-                'label_attr' => array('class' => 'form-label'),
-                'class' => 'Knygmainys\BooksBundle\Entity\Author',
-                'property'     => 'fullName',
-                'multiple'     => true
+                'required' => false,
+                'mapped' => false
             ))
             ->add('category', EntityType::class, array(
                 'label' => 'Kategorija',
                 'label_attr' => array('class' => 'form-label'),
                 'class' => 'Knygmainys\BooksBundle\Entity\Category',
                 'choice_label' => 'name',
+            ))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Pridėti knygą',
+                'attr' => array('class' => 'btn btn-large btn-primary btn-block')
             ));
     }
 

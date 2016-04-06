@@ -6,6 +6,17 @@ knygmainys_books_create:
     path:     /prideti
     defaults: { _controller: KnygmainysBooksBundle:Book:create }
 
+knygmainys_books_show:
+    path:     /rodyti/{id}
+    defaults: { _controller: KnygmainysBooksBundle:Book:show }
+    methods: [GET]
+    requirements:
+        id: \d+
+
 knygmainys_books_search_book_title:
-    path:     /ieskoti-knygos-pavadinimo
-    defaults: { _controller: KnygmainysBooksBundle:Book:searchBookTitle }
+    path:     /ieskoti-knygos
+    defaults: { _controller: KnygmainysBooksBundle:Book:searchBookByTitle }
+
+knygmainys_books_search_book_author:
+    path:     /ieskoti-autoriaus
+    defaults: { _controller: KnygmainysBooksBundle:Book:searchAuthor }

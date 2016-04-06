@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+{% block content %}
+<div class="book-view">
+    <h1>Knyga: {{ book.name }}</h1>
+    <div><h3>Aprašymas:</h3></div>
+    <div>{{ book.description }}</div><br>
+    <div><h3>Tipas:</h3></div>
+    <div>{{ team.type.name }}</div><br>
+    <div><h3>Autoriai:</h3></div>
+    <ul>
+    {% for author in authors %}
+        <li>{{ author.firstName }} {{ author.lastName }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
