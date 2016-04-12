@@ -13,6 +13,10 @@ knygmainys_books_show:
     requirements:
         id: \d+
 
+knygmainys_books_release_create:
+    path:     /leidimas/prideti
+    defaults: { _controller: KnygmainysBooksBundle:Release:create }
+
 knygmainys_books_search_book_title:
     path:     /ieskoti-knygos
     defaults: { _controller: KnygmainysBooksBundle:Book:searchBookByTitle }
@@ -20,3 +24,9 @@ knygmainys_books_search_book_title:
 knygmainys_books_search_book_author:
     path:     /ieskoti-autoriaus
     defaults: { _controller: KnygmainysBooksBundle:Book:searchAuthor }
+
+knygmainys_books_search_release_isbn:
+    path:     /ieskoti-isbn/{book}
+    defaults: { _controller: KnygmainysBooksBundle:Release:searchISBN }
+    requirements:
+        id: \d+

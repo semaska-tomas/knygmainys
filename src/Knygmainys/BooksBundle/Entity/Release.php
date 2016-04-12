@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\Entity
  * @ORM\Table(name="releases")
+ * @ORM\HasLifecycleCallbacks
  */
 class Release
 {

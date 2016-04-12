@@ -40,6 +40,18 @@ class BookManager
 
         return $results;
     }
+
+    public function findReleaseByISBN($isbn, $book)
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $results = $qb->select('r')->from('Knygmainys\BooksBundle\Entity\Release', 'r')
+            ->where( $qb->expr()->like('r.isbn', $qb->expr()->literal('%' . $isbn . '%')) )
+            ->getQuery()
+            ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+        return $results;
+    }
+
     /**
      * create json response
      *

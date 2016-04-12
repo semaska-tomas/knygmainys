@@ -3,7 +3,8 @@
 namespace Knygmainys\BooksBundle\Controller;
 
 use Knygmainys\BooksBundle\Entity\Book;
-use Knygmainys\BooksBundle\Entity\Release;
+use Knygmainys\BooksBundle\Entity\Author;
+use Knygmainys\BooksBundle\Entity\BookAuthor;
 use Knygmainys\BooksBundle\Services\BookManager;
 use Knygmainys\BooksBundle\Form\BookFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,17 +35,43 @@ class BookController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if ($form->isValid()) {
+            $authors = (array) json_decode($form->get('author')->getData());
 
-            $authors = $form->get('author')->getData();
-            print_r($authors);
-            print_r($request->request->get('author'));
-            die('End.');
+            foreach($authors as $id=>$authorFullName) {
+                $custom = explode("_", $id);
+                if (count($custom) > 1) {
+                    $lastName = '';
+                    $namePieces = explode(" ", $authorFullName);
+                    if ($namePieces > 0) {
+                        $author = new Author();
+                        $author->setFirstName($namePieces[0]);
+                        unset($namePieces[0]);
+                        foreach($namePieces as $piece) {
+                            $lastName .= ' '.$piece;
+                        }
+                        $author->setLastName($lastName);
+                    }
+                    $em->persist($author);
+                } else {
+                    $author = $this->get('doctrine.orm.entity_manager')
+                        ->getRepository('KnygmainysBooksBundle:Author')->findOneBy(
+                            array(
+                                'id' => $id
+                            )
+                    );
+                }
+                $bookAuthor = new BookAuthor();
+                $bookAuthor->setAuthor($author);
+                $bookAuthor->setBook($book);
+                $em->persist($bookAuthor);
+            }
 
-            $em->persist($book);
             $em->persist($book);
             $em->flush();
 
-            return $this->redirectToRoute('knygmainys_books_show', ['id' => $book->getId()]);
+            $this->getRequest()->headers->set('Content-Type', 'application/json');
+            $this->getRequest()->request->replace(array("bookId"=> $book->getId()));
+            return $this->forward('KnygmainysBooksBundle:Release:create');
         }
 
         return $this->render('KnygmainysBooksBundle:Book:create.html.twig', [

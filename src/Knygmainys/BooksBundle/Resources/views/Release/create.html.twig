@@ -1,0 +1,138 @@
+{% extends '::base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/css/tools/typeahead.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/tools/bootstrap-typeahead.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="panel-heading"><h1>Pridėti knygos leidimą</h1></div>
+        {{ form_start(form, {'role':'form'}) }}
+        <div class="panel-body">
+            <div><b>Knyga: </b>{{ book.title }}</div>
+            {{ form_start(form, {'role':'form'}) }}
+
+                {{ form_label(form.isbn) }}
+                <div class="book-release-exist" style="display: none;">
+                    <p>Šis knygos leidims jau egzistuoja duomenų bazėje. Norėdami redaguoti ar pridėti naują knygos leidimą pasirinkite atitinkamą veiksmą knygos peržiūros puslapyje.</p>
+                </div>
+                {{ form_errors(form.isbn) }}
+                <div id="isbnSearch">
+                    {{ form_widget(form.isbn, {'attr': {'class': 'form-control book-release-isbn typeahead', 'placeholder':'ISBN', 'autocomplete': 'off'}}) }}
+                </div>
+
+                {{ form_label(form.year) }}
+                {{ form_errors(form.year) }}
+                {{ form_widget(form.year, {'attr': {'class': 'form-control book-release-year', 'placeholder':'Knygos leidimo metai', 'autocomplete': 'off'}}) }}
+                <br>
+                {{ form_label(form.publishingHouse) }}
+                {{ form_errors(form.publishingHouse) }}
+                {{ form_widget(form.publishingHouse, {'attr': {'class': 'form-control book-release-publishing-house', 'style': 'display:block;', 'autocomplete' :'off'}}) }}
+
+                {{ form_label(form.cover) }}
+                {{ form_errors(form.cover) }}
+                {{ form_widget(form.cover, {'attr': {'class': 'book-release-cover', 'autocomplete': 'off'}}) }}
+                <br>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.book-release-year').prop('disabled', false);
+            $('.book-release-publishing-house').prop('disabled', false);
+            $('.book-release-cover').prop('disabled', false);
+            $("#knygmainys_books_release_save").attr("disabled", false);
+
+            var isbnEngine = new Bloodhound({
+                datumTokenizer: function (datum) {
+                    return Bloodhound.tokenizers.whitespace(datum.isbn);
+                },
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '{{ path('knygmainys_books_search_release_isbn', {'book': book.id}) }}',
+                    prepare: function (query, settings) {
+                        settings.type = "POST";
+                        settings.contentType = "application/json; charset=UTF-8";
+                        settings.data = query;
+                        return settings;
+                    },
+                    filter: function(data) {
+                        $('.book-release-year').prop('disabled', false);
+                        $('.book-release-publishing-house').prop('disabled', false);
+                        $('.book-release-cover').prop('disabled', false);
+                        $("#knygmainys_books_release_save").attr("disabled", false);
+                        bookMessage('hide');
+                        return $.map(data, function(release) {
+                            return {
+                                id: release.id,
+                                isbn: release.isbn,
+                                publishingHouse: release.publishingHouse,
+                                year: release.year
+                            }
+                        });
+                    }
+                }
+            });
+
+            isbnEngine.initialize();
+
+            $('#isbnSearch .typeahead').typeahead(
+                    {
+                        name: 'isbn',
+                        hint: true,
+                        highlight: true,
+                        minLength: 2,
+                        limit:10,
+                        classNames: {
+                            open: 'is-open',
+                            empty: 'is-empty',
+                            cursor: 'is-active',
+                            suggestion: 'Typeahead-suggestion',
+                            selectable: 'Typeahead-selectable'
+                        }
+                    },
+                    {
+                        name: 'isbnEngine',
+                        displayKey: 'isbn',
+                        source: isbnEngine.ttAdapter(),
+                        templates: {
+                            empty: [
+                                '<div class="empty-message hint-large">',
+                                'Tokio knygos leidimo mūsų duombazėje nėra, galite sekmingai pridėti šį leidimą.',
+                                '</div>'
+                            ].join('\n'),
+                            {% verbatim %}
+                            suggestion: Handlebars.compile('<div class="hint-large">' +
+                                '<div class="media-body tt-hint-body">{{isbn}} - {{publishingHouse}} {{year}}</div>' +
+                             '</div>')
+                            {% endverbatim %}
+                        }
+                    });
+            $('#isbnSearch .typeahead.input-sm').siblings('input.tt-hint').addClass('hint-small');
+            $('#isbnSearch .typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+            $('#isbnSearch').bind('typeahead:selected', function(obj, datum, name) {
+                $('.book-release-year').prop('disabled', true);
+                $('.book-release-publishing-house').prop('disabled', true);
+                $('.book-release-cover').prop('disabled', true);
+                $("#knygmainys_books_release_save").attr("disabled", true);
+                bookMessage('show');
+            });
+
+            function bookMessage(action) {
+                if (action == 'show') {
+                    $('.book-release-exist').slideDown();
+                } else {
+                    $('.book-release-exist').slideUp();
+                }
+            }
+        });
+    </script>
+{% endblock %}

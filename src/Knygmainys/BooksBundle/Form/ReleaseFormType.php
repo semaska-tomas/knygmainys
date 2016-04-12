@@ -3,6 +3,7 @@
 namespace Knygmainys\BooksBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -30,6 +31,10 @@ class ReleaseFormType extends AbstractType
             ->add('cover', 'file', array(
                 'label' => 'Viršelis',
                 'label_attr' => array('class' => 'form-label')
+            ))
+            ->add('save', SubmitType::class, array(
+                'label' => 'Pridėti leidimą',
+                'attr' => array('class' => 'btn btn-large btn-primary btn-block')
             ));
     }
 
