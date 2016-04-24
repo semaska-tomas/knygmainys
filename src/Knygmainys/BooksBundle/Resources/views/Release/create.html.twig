@@ -10,7 +10,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
 {% endblock %}
 
-{% block content %}
+{% block content_title %}
+    <div>Knygos leidimo pridėjimas</div>
+{% endblock %}
+{% block content_body %}
     <div class="panel-heading"><h1>Pridėti knygos leidimą</h1></div>
         {{ form_start(form, {'role':'form'}) }}
         <div class="panel-body">

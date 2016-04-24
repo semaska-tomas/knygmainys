@@ -2,10 +2,13 @@
 
 namespace Knygmainys\UserBundle\Entity;
 
+use Knygmainys\BooksBundle\Entity\HaveBook;
+use Knygmainys\BooksBundle\Entity\WantBook;
 use Knygmainys\UserBundle\Entity\City;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -109,9 +112,25 @@ class User extends BaseUser
      */
     protected $postCode;
 
+    /**
+     * book owned association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\HaveBook", mappedBy="user")
+     */
+    protected $ownedBooks;
+
+    /**
+     * book wanted association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\WantBook", mappedBy="user")
+     */
+    protected $wantedBooks;
+
     public function __construct()
     {
         parent::__construct();
+        $this->ownedBooks = new ArrayCollection();
+        $this->wantedBooks = new ArrayCollection();
     }
 
     /**
@@ -220,5 +239,71 @@ class User extends BaseUser
     {
         $this->postCode = $postCode;
         return $this;
+    }
+
+    /**
+     * Add owned book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $book
+     * @return User
+     */
+    public function addOwnedBooks($book)
+    {
+        $this->ownedBooks[] = $book;
+
+        return $this;
+    }
+
+    /**
+     * Remove owned book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $book
+     */
+    public function removeOwnedBooks($book)
+    {
+        $this->ownedBooks->removeElement($book);
+    }
+
+    /**
+     * Get owned books
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOwnedBooks()
+    {
+        return $this->ownedBooks;
+    }
+
+    /**
+     * Add wanted book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\WantBook $book
+     * @return User
+     */
+    public function addWantedBooks($book)
+    {
+        $this->wantedBooks[] = $book;
+
+        return $this;
+    }
+
+    /**
+     * Remove wanted book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\WantBook $book
+     */
+    public function removeWantedBooks($book)
+    {
+        $this->wantedBooks->removeElement($book);
+    }
+
+    /**
+     * Get wanted books
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWantedBooks()
+    {
+        return $this->wantedBooks;
     }
 }

@@ -22,8 +22,10 @@
   font-weight: 300; }
 
 .menu-list,
-.header-sidebar-user > ul {
-  list-style-type: none; }
+.header-sidebar-user > ul,
+.item-list {
+  list-style-type: none;
+  padding-left: 0px; }
 
 .menu-list li {
   display: inline;

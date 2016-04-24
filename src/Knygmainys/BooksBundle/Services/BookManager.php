@@ -3,18 +3,21 @@
 namespace Knygmainys\BooksBundle\Services;
 
 use Knygmainys\BooksBundle\Entity\Book;
+use Knygmainys\BooksBundle\Entity\HaveBook;
+use Knygmainys\BooksBundle\Entity\WantBook;
+use Knygmainys\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookManager
 {
-    private $entityManager;
+    private $em;
     private $bookRepository;
 
     public function __construct(EntityManager $entityManager)
     {
-        $this->entityManager = $entityManager;
-        $this->bookRepository = $this->entityManager->getRepository('KnygmainysBooksBundle:Book');
+        $this->em = $entityManager;
+        $this->bookRepository = $this->em->getRepository('KnygmainysBooksBundle:Book');
     }
 
     public function findBookByTitle($title)
@@ -26,7 +29,7 @@ class BookManager
 
     public function findAuthor($authors)
     {
-        $qb = $this->entityManager->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $results = $qb->select('a')->from('Knygmainys\BooksBundle\Entity\Author', 'a')
             ->where( $qb->expr()->like('a.firstName', $qb->expr()->literal('%' . $authors . '%')) )
             ->getQuery()
@@ -43,13 +46,71 @@ class BookManager
 
     public function findReleaseByISBN($isbn, $book)
     {
-        $qb = $this->entityManager->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
         $results = $qb->select('r')->from('Knygmainys\BooksBundle\Entity\Release', 'r')
             ->where( $qb->expr()->like('r.isbn', $qb->expr()->literal('%' . $isbn . '%')) )
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
         return $results;
+    }
+
+    public function addWantedBook($user, $bookId)
+    {
+        //check if such book exists
+        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->findOne($bookId);
+        if (!$book) {
+            return false;
+        }
+
+        //check if user already added this book
+        $wantedBook = $this->em->getRepository('KnygmainysBooksBundle:WantBook')
+            ->findOneBy(array(
+                'user' => $user->getId(),
+                'book' => $bookId
+            ));
+
+        if ($wantedBook) {
+            return false;
+        }
+
+        $wantedBook = new WantBook();
+        $wantedBook->setUser($user);
+        $wantedBook->setBook($book);
+        $wantedBook->setStatus('owned');
+        $wantedBook->setUpdated();
+        $wantedBook->setPoints(0);
+
+        return true;
+    }
+
+    public function addOwnedBook($user, $bookId)
+    {
+        //check if such book exists
+        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->findOne($bookId);
+        if (!$book) {
+            return false;
+        }
+
+        //check if user already added this book
+        $ownedBook = $this->em->getRepository('KnygmainysBooksBundle:HaveBook')
+            ->findOneBy(array(
+                'user' => $user->getId(),
+                'book' => $bookId
+            ));
+
+        if ($ownedBook) {
+            return false;
+        }
+
+        $haveBook = new HaveBook();
+        $haveBook->setUser($user);
+        $haveBook->setBook($book);
+        $haveBook->setStatus('owned');
+        $haveBook->setUpdated();
+
+        return true;
+
     }
 
     /**

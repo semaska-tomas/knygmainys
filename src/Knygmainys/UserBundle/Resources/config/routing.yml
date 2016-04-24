@@ -1,3 +1,18 @@
 knygmainys_user_homepage:
     path:     /
     defaults: { _controller: KnygmainysUserBundle:Default:index }
+
+knygmainys_user.notification:
+   path: /pranesimai/{page}
+   defaults: { _controller: KnygmainysUserBundle:Notification:show, page: 1 }
+   methods: [GET]
+   requirements:
+      page: \d+
+
+knygmainys_user.notification.delete:
+   path: /pranesimai/pasalinti
+   defaults: { _controller: KnygmainysUserBundle:Notification:delete }
+
+knygmainys_user.notification.update_status:
+   path: /pranesimai/atnaujinti
+   defaults: { _controller: KnygmainysUserBundle:Notification:updateStatus }

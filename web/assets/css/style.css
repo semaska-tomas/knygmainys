@@ -80,6 +80,15 @@ body {
   padding-top: 10px;
   padding-bottom: 5px; }
 
+.book-image {
+  height: 150px; }
+
+.book-release-item {
+  padding: 10px 0px; }
+
+.book-release td {
+  padding-right: 10px; }
+
 @media (max-width: 1200px) {
   .registration-label {
     text-align: left; } }

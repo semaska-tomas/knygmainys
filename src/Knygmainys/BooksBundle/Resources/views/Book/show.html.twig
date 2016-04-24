@@ -1,17 +1,101 @@
 {% extends '::base.html.twig' %}
 
-{% block content %}
+{% block content_title %}
+    <div>Knygos informacija</div>
+{% endblock %}
+{% block content_body %}
 <div class="book-view">
-    <h1>Knyga: {{ book.name }}</h1>
+    <h1>{{ book.title }}</h1>
     <div><h3>Aprašymas:</h3></div>
     <div>{{ book.description }}</div><br>
-    <div><h3>Tipas:</h3></div>
-    <div>{{ team.type.name }}</div><br>
+    <div><h3>Kategorija:</h3></div>
+    <div>{{ book.category.name }}</div>
     <div><h3>Autoriai:</h3></div>
-    <ul>
-    {% for author in authors %}
-        <li>{{ author.firstName }} {{ author.lastName }}</li>
+    <ul class="item-list">
+        {% for author in authors %}
+            <li>{{ author.firstName }} {{ author.lastName }}</li>
+        {% endfor %}
+    </ul>
+    <div><h3>Ledimai:</h3></div>
+    <ul class="item-list">
+    {% for release in releases %}
+        <li class="book-release-item">
+            <table class="book-release">
+                <tr>
+                    <td rowspan="4">
+                        <img class="book-image" src="{{ asset(release.release.getWebPath()) }}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td><b>ISBN: </b>{{ release.release.isbn }}</td>
+                </tr>
+                <tr>
+                    <td><b>Metai: </b>{{ release.release.year }}</td>
+                </tr>
+                <tr>
+                    <td><b>Leidykla: </b>{{ release.release.publishingHouse }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="button" class="btn btn-primary wanted-release" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
+                            <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Norimas leidimas
+                        </button>
+                        <button type="button" class="btn btn-primary owned-release" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
+                            <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Turimas leidimas
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </li>
     {% endfor %}
     </ul>
+    <br>
+    <div id="book-status-messages"></div>
+    <div class="button-container">
+        <button type="button" id="wanted-book" class="btn btn-primary" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="0">
+            <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Norima knyga
+        </button>
+        <button type="button" id="owned-book" class="btn btn-primary" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="0">
+            <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Turima knyga
+        </button>
+    </div>
 </div>
+{% endblock %}
+{% block bottomScripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#owned-book, #wanted-book').on('click', function () {
+            var messageBox = $('#book-status-messages');
+            var clickedItem = $(this).attr("id");
+            var data = {};
+            data.id = this.getAttribute("data-id");
+            data.release = this.getAttribute("data-release-id");
+
+            if (clickedItem == 'owned-book'){
+                data.action = 'owned';
+            } else if (clickedItem == 'wanted-book'){
+                data.action = 'wanted';
+            }
+
+            $.ajax({
+                type: "POST",
+                url: {{path('knygmainys_books_add_book')}},
+                data: data,
+                success: function(data) {
+                    var className = '';
+                    if (data['status'] == 'ok') {
+                        className = 'alert alert-success';
+                    } else {
+                        className = 'alert alert-danger';
+                    }
+
+                    var content = '<div class="' + className + '">' + data["message"]
+                            + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                    $(content).hide().appendTo(messageBox).fadeIn(1000);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

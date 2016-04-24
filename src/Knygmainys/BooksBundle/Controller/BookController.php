@@ -8,6 +8,7 @@ use Knygmainys\BooksBundle\Entity\BookAuthor;
 use Knygmainys\BooksBundle\Services\BookManager;
 use Knygmainys\BooksBundle\Form\BookFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -84,11 +85,44 @@ class BookController extends Controller
     {
         $bookRepository = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book');
         $authors = $bookRepository->getBookAuthors($book->getId());
-
+        $releases = $bookRepository->getBookReleases($book->getId());
+        $rootDir = $this->get('kernel')->getRootDir();
+        $rootDir = preg_replace("/app/", "", $rootDir);
         return $this->render('KnygmainysBooksBundle:Book:show.html.twig', [
             'book' => $book,
-            'authors' => $authors
+            'releases' => $releases,
+            'authors' => $authors,
+            'rootDir' => $rootDir
         ]);
+    }
+
+    public function addBookToListAction(Request $request)
+    {
+        $bookManager = $this->get('knygmainys_books.book_manager');
+        if ($request->isXmlHttpRequest()) {
+            $bookId = intval(strip_tags($request->request->get('id')));
+            $action = strip_tags($request->request->get('action'));
+
+            try {
+                $user = $this->getUser();
+                $book = false;
+                if ($action === 'wanted') {
+                    $msg = $bookManager->addWantedBook($user, $bookId);
+                } elseif ($action === 'owned') {
+                    $msg = $bookManager->addOwnedBook($user, $bookId);
+                }
+
+                if ($msg === true) {
+                    return $bookManager->createJSonResponse('Knyga sekmingai pridėta!', 'ok', 200);
+                }
+
+                return $bookManager->createJSonResponse($msg, 'failed', 200);
+            } catch (Exception $e) {
+                return $bookManager->createJSonResponse($e->getMessage(), 'failed', 200);
+            }
+        } else {
+            return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
+        }
     }
 
     public function searchBookByTitleAction(Request $request)

@@ -1,9 +1,12 @@
 services:
-#    knygmainys_user.example:
-#        class: Knygmainys\UserBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%
     knygmainys_user.registration.form.type:
         class: Knygmainys\UserBundle\Form\RegistrationFormType
         arguments: [%fos_user.model.user.class%]
         tags:
             - { name: form.type, alias: knygmainys_user_registration }
+
+    knygmainys_user.notifications_service:
+        class: Knygmainys\UserBundle\Service\NotificationService
+        arguments:
+            entityManager: "@doctrine.orm.entity_manager"
+            router: "@router"

@@ -29,6 +29,18 @@ class BookRepository extends EntityRepository
                 WHERE ba.book = :book")
             ->setParameter('book', $bookId);
 
-        return $query->getArrayResult();
+        return $query->getResult();
+    }
+
+    public function getBookReleases($bookId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('ra, b')->from('Knygmainys\BooksBundle\Entity\BookRelease', 'ra')
+            ->leftJoin('ra.book', 'b')
+            ->where( $qb->expr()->eq('b.id', $bookId) )
+            ->getQuery()
+            ->getResult();
+
+        return $results;
     }
 }

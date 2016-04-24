@@ -48,9 +48,8 @@ class ReleaseController extends Controller
     {
         $customErrors = [];
         $release = new Release();
-        //print_r($request->request->get('bookId'));
 
-        $bookId = 1;
+        $bookId = intval($request->request->get('bookId'));
         $book = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book')->find($bookId);
 
         $form = $this->createForm(new ReleaseFormType(), $release);
@@ -80,9 +79,11 @@ class ReleaseController extends Controller
     {
         $bookRepository = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book');
         $authors = $bookRepository->getBookAuthors($book->getId());
+        $releases = $bookRepository->getBookReleases($book->getId());
 
         return $this->render('KnygmainysBooksBundle:Book:show.html.twig', [
             'book' => $book,
+            'releases' => $releases,
             'authors' => $authors
         ]);
     }
