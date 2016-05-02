@@ -45,6 +45,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        userNotifications: "@knygmainys_user.notifications_service"
+
 
 # Doctrine Configuration
 doctrine:

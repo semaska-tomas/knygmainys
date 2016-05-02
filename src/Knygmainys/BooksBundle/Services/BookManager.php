@@ -55,48 +55,84 @@ class BookManager
         return $results;
     }
 
-    public function addWantedBook($user, $bookId)
+    public function addWantedBook($user, $bookId, $releaseId)
     {
-        //check if such book exists
-        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->findOne($bookId);
+        //check if such book and release exists
+        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->find($bookId);
         if (!$book) {
-            return false;
+            return 'Tokia knyga neegzistuoja!';
+        }
+
+        if ($releaseId != 0) {
+            $release = $this->em->getRepository('KnygmainysBooksBundle:BookRelease')
+                    ->findOneBy(array(
+                            'book' => $bookId,
+                            'release' => $releaseId
+                        )
+                    );
+
+            if (!$release) {
+                return 'Toks knygos leidimas neegzistuoja!';
+            }
         }
 
         //check if user already added this book
         $wantedBook = $this->em->getRepository('KnygmainysBooksBundle:WantBook')
             ->findOneBy(array(
                 'user' => $user->getId(),
-                'book' => $bookId
+                'book' => $bookId,
+                'release' => $releaseId
             ));
 
         if ($wantedBook) {
-            return false;
+            return 'Tokia knyga jau yra Jūsų norimų knygų sąraše.';
         }
 
-        $wantedBook = new WantBook();
-        $wantedBook->setUser($user);
-        $wantedBook->setBook($book);
-        $wantedBook->setStatus('owned');
-        $wantedBook->setUpdated();
-        $wantedBook->setPoints(0);
+        $wantBook = new WantBook();
+
+        if ($releaseId != 0) {
+            $release = $this->em->getRepository('KnygmainysBooksBundle:Release')->find($releaseId);
+            $wantBook->setRelease($release);
+        }
+
+        $wantBook->setUser($user);
+        $wantBook->setBook($book);
+        $wantBook->setStatus('owned');
+        $wantBook->setUpdated();
+        $wantBook->setPoints(0);
+        $this->em->persist($wantBook);
+        $this->em->flush();
 
         return true;
     }
 
-    public function addOwnedBook($user, $bookId)
+    public function addOwnedBook($user, $bookId, $releaseId)
     {
-        //check if such book exists
-        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->findOne($bookId);
+        //check if such book and release exists
+        $book = $this->em->getRepository('KnygmainysBooksBundle:Book')->find($bookId);
         if (!$book) {
-            return false;
+            return 'Tokia knyga neegzistuoja!';
+        }
+
+        if ($releaseId != 0) {
+            $release = $this->em->getRepository('KnygmainysBooksBundle:BookRelease')
+                ->findOneBy(array(
+                        'book' => $bookId,
+                        'release' => $releaseId
+                    )
+                );
+
+            if (!$release) {
+                return 'Toks knygos leidimas neegzistuoja!';
+            }
         }
 
         //check if user already added this book
         $ownedBook = $this->em->getRepository('KnygmainysBooksBundle:HaveBook')
             ->findOneBy(array(
                 'user' => $user->getId(),
-                'book' => $bookId
+                'book' => $bookId,
+                'release' => $releaseId
             ));
 
         if ($ownedBook) {
@@ -104,10 +140,18 @@ class BookManager
         }
 
         $haveBook = new HaveBook();
+
+        if ($releaseId != 0) {
+            $release = $this->em->getRepository('KnygmainysBooksBundle:Release')->find($releaseId);
+            $haveBook->setRelease($release);
+        }
+
         $haveBook->setUser($user);
         $haveBook->setBook($book);
         $haveBook->setStatus('owned');
         $haveBook->setUpdated();
+        $this->em->persist($haveBook);
+        $this->em->flush();
 
         return true;
 

@@ -1,6 +1,9 @@
 knygmainys_books_homepage:
-    path:     /
-    defaults: { _controller: KnygmainysBooksBundle:Book:index }
+    path:     /{page}
+    defaults: { _controller: KnygmainysBooksBundle:Book:index, page: 1 }
+    methods: [GET]
+    requirements:
+        page: \d+
 
 knygmainys_books_create:
     path:     /prideti

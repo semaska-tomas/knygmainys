@@ -68,6 +68,13 @@ class Book
     protected $category;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="datetime")
+     */
+    private $created;
+
+    /**
      * book release association
      *
      * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\BookRelease", mappedBy="book")
@@ -172,6 +179,28 @@ class Book
     public function setCategory(Category $category)
     {
         $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * Get update time
+     *
+     * @return integer
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set update time
+     *
+     * @return HaveBook
+     */
+    public function setCreated()
+    {
+        $this->created = new \DateTime("now");
+
         return $this;
     }
 

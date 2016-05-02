@@ -100,15 +100,31 @@ class Release
     private $coverPath;
 
     /**
-     * team users association
+     * book release association
      *
      * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\BookRelease", mappedBy="release")
      */
     protected $bookRelease;
 
+    /**
+     * book release association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\WantBook", mappedBy="release")
+     */
+    protected $wantedReleases;
+
+    /**
+     * book release association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\HaveBook", mappedBy="release")
+     */
+    protected $ownedReleases;
+
     public function __construct()
     {
         $this->bookRelease = new ArrayCollection();
+        $this->wantedReleases = new ArrayCollection();
+        $this->ownedReleases = new ArrayCollection();
     }
 
     /**
@@ -316,5 +332,71 @@ class Release
     public function getBookRelease()
     {
         return $this->bookRelease;
+    }
+
+    /**
+     * Add wantedReleases
+     *
+     * @param \Knygmainys\BooksBundle\Entity\WantBook $wantedReleases
+     * @return Release
+     */
+    public function addWantedReleases($wantedReleases)
+    {
+        $this->wantedReleases[] = $wantedReleases;
+
+        return $this;
+    }
+
+    /**
+     * Remove wantedReleases
+     *
+     * @param \Knygmainys\BooksBundle\Entity\BookRelease $wantedReleases
+     */
+    public function removeWantedReleases($wantedReleases)
+    {
+        $this->wantedReleases->removeElement($wantedReleases);
+    }
+
+    /**
+     * Get wantedReleases
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWantedReleases()
+    {
+        return $this->wantedReleases;
+    }
+
+    /**
+     * Add ownedReleases
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $ownedReleases
+     * @return Release
+     */
+    public function addOwnedReleases($ownedReleases)
+    {
+        $this->ownedReleases[] = $ownedReleases;
+
+        return $this;
+    }
+
+    /**
+     * Remove ownedReleases
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $bookRelease
+     */
+    public function removeOwnedReleases($ownedReleases)
+    {
+        $this->ownedReleases->removeElement($ownedReleases);
+    }
+
+    /**
+     * Get ownedReleases
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOwnedReleases()
+    {
+        return $this->ownedReleases;
     }
 }

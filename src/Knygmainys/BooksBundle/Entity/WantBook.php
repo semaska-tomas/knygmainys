@@ -41,7 +41,7 @@ class WantBook
     /**
      * @var integer
      *
-     * @ORM\Column(name="datetime")
+     * @ORM\Column(name="datetime", type="date")
      */
     private $updated;
 
@@ -54,6 +54,14 @@ class WantBook
     private $book;
 
     /**
+    *
+    * @ORM\ManyToOne(targetEntity="Knygmainys\BooksBundle\Entity\Release", inversedBy="wantedReleases")
+    * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
+    *
+    */
+    private $release;
+
+    /**
      *
      * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="wantedBooks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
@@ -63,11 +71,11 @@ class WantBook
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="Knygmainys\BooksBundle\Entity\Release", inversedBy="wantedBooks")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="contributedBooks")
+     * @ORM\JoinColumn(name="contributor_id", referencedColumnName="id", nullable=true)
      *
      */
-    private $release;
+    private $contributor;
 
     /**
      * Get id
@@ -191,6 +199,29 @@ class WantBook
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set release
+     *
+     * @param \Knygmainys\BooksBundle\Entity\Release $release
+     * @return WantBook
+     */
+    public function setRelease($release = null)
+    {
+        $this->release = $release;
+
+        return $this;
+    }
+
+    /**
+     * Get release
+     *
+     * @return \Knygmainys\BooksBundle\Entity\Release
+     */
+    public function getRelease()
+    {
+        return $this->release;
     }
 
 }

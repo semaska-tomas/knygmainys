@@ -38,10 +38,10 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button type="button" class="btn btn-primary wanted-release" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
+                        <button type="button" class="btn btn-primary wanted-book" aria-label="Left Align" autocomplete="off" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
                             <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Norimas leidimas
                         </button>
-                        <button type="button" class="btn btn-primary owned-release" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
+                        <button type="button" class="btn btn-primary owned-book" aria-label="Left Align" autocomplete="off" data-id="{{ book.id }}" data-release-id="{{ release.release.id }}">
                             <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Turimas leidimas
                         </button>
                     </td>
@@ -53,10 +53,10 @@
     <br>
     <div id="book-status-messages"></div>
     <div class="button-container">
-        <button type="button" id="wanted-book" class="btn btn-primary" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="0">
+        <button type="button" class="btn btn-primary wanted-book" aria-label="Left Align" autocomplete="off" data-id="{{ book.id }}" data-release-id="0">
             <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Norima knyga
         </button>
-        <button type="button" id="owned-book" class="btn btn-primary" aria-label="Left Align" data-id="{{ book.id }}" data-release-id="0">
+        <button type="button" class="btn btn-primary owned-book" aria-label="Left Align" autocomplete="off" data-id="{{ book.id }}" data-release-id="0">
             <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Turima knyga
         </button>
     </div>
@@ -65,27 +65,28 @@
 {% block bottomScripts %}
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#owned-book, #wanted-book').on('click', function () {
+        $('.owned-book, .wanted-book').on('click', function () {
             var messageBox = $('#book-status-messages');
-            var clickedItem = $(this).attr("id");
+            var clicked = $(this);
             var data = {};
             data.id = this.getAttribute("data-id");
             data.release = this.getAttribute("data-release-id");
 
-            if (clickedItem == 'owned-book'){
+            if (clicked.is( ".owned-book" )){
                 data.action = 'owned';
-            } else if (clickedItem == 'wanted-book'){
+            } else if (clicked.is( ".wanted-book" )){
                 data.action = 'wanted';
             }
 
             $.ajax({
                 type: "POST",
-                url: {{path('knygmainys_books_add_book')}},
+                url: "{{ path('knygmainys_books_add_book') }}",
                 data: data,
                 success: function(data) {
                     var className = '';
                     if (data['status'] == 'ok') {
                         className = 'alert alert-success';
+                        clicked.prop("disabled",true);
                     } else {
                         className = 'alert alert-danger';
                     }

@@ -1,7 +1,7 @@
 {% if app.user %}
     <div class="header-sidebar-user">
-        <ul>
-            <li><span class="glyphicon glyphicon-user"></span> {{ app.user.firstName }} {{ app.user.lastName }}</li>
+        <ul class="item-list">
+            <li><span class="glyphicon glyphicon-user"></span> {{ app.user.username }}</li>
             <li>Taškai: </li>
             <li>
                 <ul>
@@ -9,8 +9,8 @@
                     <li>Rezervuoti: 0</li>
                 </ul>
             </li>
-            <li>Mano profilis</li>
-            <li>Pranešimai</li>
+            <li class="menu-link"><a href="{{ path('knygmainys_user_profile', {'id': app.user.id}) }}">Mano profilis</a></li>
+            <li class="menu-link"><a href="{{ path('knygmainys_user.notification') }}">Pranešimai ({{ userNotifications.getUnreadNotificationsCount(app.user.id) }})</a></li>
         </ul>
     </div>
 {% else %}

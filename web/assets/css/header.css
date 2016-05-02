@@ -38,6 +38,7 @@
 .menu-list .menu-link {
   margin-right: 10px; }
 
+.item-list li a,
 .menu-list li a {
   text-decoration: none;
   color: #FFF; }

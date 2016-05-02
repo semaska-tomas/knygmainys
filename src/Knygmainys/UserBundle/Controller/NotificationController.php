@@ -22,13 +22,11 @@ class NotificationController extends Controller
     {
         $em = $this->getDoctrine()->getManager()->createQueryBuilder();
 
-        $query = $em->select('n, u.seen')
-                    ->from('KnygmainysUserBundle:Notification', 'n')
-                    ->leftJoin('Knygmainys\UserBundle\Entity\NotificationUser',
-                        'u',
-                        \Doctrine\ORM\Query\Expr\Join::WITH,
-                        'n.id = u.notification')
-                    ->where('u.user = :user')
+        $query = $em->select('nu')
+                    ->from('KnygmainysUserBundle:NotificationUser', 'nu')
+                    //->add('from', 'KnygmainysUserBundle:NotificationUser nu INNER JOIN nu.notification n')
+                    ->innerJoin('nu.notification', 'n')
+                    ->where('nu.user = :user')
                     ->setParameter('user', $this->getUser());
 
         $notifications = $this->get('knp_paginator')->paginate(

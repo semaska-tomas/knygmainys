@@ -23,7 +23,7 @@ class NotificationUser
 
     /**
      *
-     * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="notificationUser")
+     * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="notifications")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */

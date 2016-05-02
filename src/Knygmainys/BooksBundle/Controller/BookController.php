@@ -5,8 +5,11 @@ namespace Knygmainys\BooksBundle\Controller;
 use Knygmainys\BooksBundle\Entity\Book;
 use Knygmainys\BooksBundle\Entity\Author;
 use Knygmainys\BooksBundle\Entity\BookAuthor;
+use Knygmainys\BooksBundle\Form\SearchType;
 use Knygmainys\BooksBundle\Services\BookManager;
 use Knygmainys\BooksBundle\Form\BookFormType;
+use Knp\Component\Pager\Paginator;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +18,56 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class BookController extends Controller
 {
-    public function indexAction()
+    const BOOKS_PER_PAGE = 8;
+
+    public function indexAction(Request $request)
     {
-        echo 'asd ';
-        return $this->render('KnygmainysBooksBundle:Default:index.html.twig');
+        $paginator = $this->get('knp_paginator');
+        $qb = $this->get('doctrine.orm.entity_manager')
+            ->getRepository('KnygmainysBooksBundle:Book')
+            ->createQueryBuilder('b');
+
+        $query = $qb->select('b');
+
+        $searchForm = $this->get('form.factory')->createNamed('', new SearchType());
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted()) {
+            $formData = $searchForm->getData();
+
+            if (!is_null($formData['search_text'])) {
+                $query = $query->where('b.title LIKE :searchText')
+                    ->setParameter('searchText', '%' . $formData['search_text'] . '%');
+            }
+
+            if (!$formData['category']->isEmpty()) {
+                $query = $query->andWhere('b.category IN (:category)')
+                    ->setParameter('category', $formData['category']->toArray());
+            }
+
+            if ($formData['type'] != null) {
+                if ($formData['type'] == 'wanted') {
+                    $query = $query->innerJoin('b.wantedBook', 'wanted');
+                } elseif ($formData['type'] == 'owned') {
+                    $query = $query->innerJoin('b.ownedBook', 'owned');
+                }
+            }
+        }
+
+        $query = $query
+            ->orderBy('b.created')
+            ->getQuery();
+
+        $books = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', $request->get('page')),
+            self::BOOKS_PER_PAGE
+        );
+
+        return $this->render('KnygmainysBooksBundle:Book:index.html.twig', [
+            'books' => $books,
+            'form' => $searchForm->createView()
+        ]);
     }
 
     /**
@@ -101,15 +150,16 @@ class BookController extends Controller
         $bookManager = $this->get('knygmainys_books.book_manager');
         if ($request->isXmlHttpRequest()) {
             $bookId = intval(strip_tags($request->request->get('id')));
+            $release = intval(strip_tags($request->request->get('release')));
             $action = strip_tags($request->request->get('action'));
 
             try {
                 $user = $this->getUser();
-                $book = false;
+                $msg = false;
                 if ($action === 'wanted') {
-                    $msg = $bookManager->addWantedBook($user, $bookId);
+                    $msg = $bookManager->addWantedBook($user, $bookId, $release);
                 } elseif ($action === 'owned') {
-                    $msg = $bookManager->addOwnedBook($user, $bookId);
+                    $msg = $bookManager->addOwnedBook($user, $bookId, $release);
                 }
 
                 if ($msg === true) {

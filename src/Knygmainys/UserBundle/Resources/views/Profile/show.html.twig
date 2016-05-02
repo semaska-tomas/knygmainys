@@ -1,0 +1,17 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}
+    <div>Profilis</div>
+{% endblock %}
+{% block content_body %}
+    <div class="profile-view">
+        <h2><b>Vartotojas:</b> {{ user.username }}</h2>
+        <ul>
+            <li><b>Vardas:</b> {{ user.firstName }} {{ user.lastName }}</li>
+            <li><b>Adresas:</b> {{ user.address }}</li>
+            <li><b>Miestas:</b> {{ user.city.name }}</li>
+            <li><b>Pašto kodas:</b> {{ user.postCode }}</li>
+            <li><b>Paskutini kartą buvo prisijungęs:</b> {{ user.lastLogin.format('Y-m-d H:i:s') }}</li>
+        </ul>
+    </div>
+{% endblock %}

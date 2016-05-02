@@ -1,6 +1,13 @@
 knygmainys_user_homepage:
     path:     /
-    defaults: { _controller: KnygmainysUserBundle:Default:index }
+    defaults: { _controller: KnygmainysUserBundle:Profile:index }
+
+knygmainys_user_profile:
+   path: /{id}
+   defaults: { _controller: KnygmainysUserBundle:Profile:show }
+   methods: [GET]
+   requirements:
+       id: \d+
 
 knygmainys_user.notification:
    path: /pranesimai/{page}

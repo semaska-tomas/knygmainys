@@ -34,7 +34,7 @@ class HaveBook
     /**
      * @var integer
      *
-     * @ORM\Column(name="datetime")
+     * @ORM\Column(name="datetime", type="date")
      */
     private $updated;
 
@@ -48,11 +48,28 @@ class HaveBook
 
     /**
      *
+     * @ORM\ManyToOne(targetEntity="Knygmainys\BooksBundle\Entity\Release", inversedBy="ownedReleases")
+     * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
+     *
+     */
+    private $release;
+
+
+    /**
+     *
      * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="ownedBooks")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */
     private $user;
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="Knygmainys\UserBundle\Entity\User", inversedBy="receivedBooks")
+     * @ORM\JoinColumn(name="receiver_id", referencedColumnName="id", nullable=true)
+     *
+     */
+    private $receiver;
 
     /**
      * Get id
@@ -100,7 +117,7 @@ class HaveBook
     /**
      * Set update time
      *
-     * @return HaveBook
+     * @return WantBook
      */
     public function setUpdated()
     {
@@ -155,4 +172,26 @@ class HaveBook
         return $this->user;
     }
 
+    /**
+     * Set release
+     *
+     * @param \Knygmainys\BooksBundle\Entity\Release $release
+     * @return HaveBook
+     */
+    public function setRelease($release = null)
+    {
+        $this->release = $release;
+
+        return $this;
+    }
+
+    /**
+     * Get release
+     *
+     * @return \Knygmainys\BooksBundle\Entity\Release
+     */
+    public function getRelease()
+    {
+        return $this->release;
+    }
 }

@@ -113,6 +113,27 @@ class User extends BaseUser
     protected $postCode;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="current_points", type="integer", options={"default" : 3})
+     */
+    protected $currentPoints;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="reserved_points", type="integer", options={"default" : 0})
+     */
+    protected $reservedPoints;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="total_points", type="integer", options={"default" : 3})
+     */
+    protected $totalPoints;
+
+    /**
      * book owned association
      *
      * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\HaveBook", mappedBy="user")
@@ -126,15 +147,37 @@ class User extends BaseUser
      */
     protected $wantedBooks;
 
+    /**
+     * book contributed association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\HaveBook", mappedBy="user")
+     */
+    protected $contributedBooks;
+
+    /**
+     * book received association
+     *
+     * @ORM\OneToMany(targetEntity="Knygmainys\BooksBundle\Entity\WantBook", mappedBy="user")
+     */
+    protected $receivedBooks;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Knygmainys\UserBundle\Entity\NotificationUser", mappedBy="user")
+     */
+    protected $notifications;
+
     public function __construct()
     {
         parent::__construct();
+        $this->notifications = new ArrayCollection();
         $this->ownedBooks = new ArrayCollection();
         $this->wantedBooks = new ArrayCollection();
+        $this->contributedBooks = new ArrayCollection();
+        $this->receivedBooks = new ArrayCollection();
     }
 
     /**
-     * @return mixed
+     * @return integer
      */
     public function getId()
     {
@@ -142,7 +185,7 @@ class User extends BaseUser
     }
 
     /**
-     * @param mixed $id
+     * @param integer $id
      * @return User
      */
     public function setId($id)
@@ -242,6 +285,103 @@ class User extends BaseUser
     }
 
     /**
+     * @return integer
+     */
+    public function getCurrentPoints()
+    {
+        return $this->currentPoints;
+    }
+
+    /**
+     * @param integer $currentPoints
+     * @return User
+     */
+    public function setCurrentPoints($currentPoints)
+    {
+        $this->currentPoints = $currentPoints;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getReservedPoints()
+    {
+        return $this->reservedPoints;
+    }
+
+    /**
+     * @param integer $reservedPoints
+     * @return User
+     */
+    public function setReservedPoints($reservedPoints)
+    {
+        $this->reservedPoints = $reservedPoints;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getTotalPoints()
+    {
+        return $this->totalPoints;
+    }
+
+    /**
+     * @param integer $totalPoints
+     * @return User
+     */
+    public function setTotalPoints($totalPoints)
+    {
+        $this->totalPoints = $totalPoints;
+        return $this;
+    }
+
+    /**
+     * @param $points
+     * @return User
+     */
+    public function addEarnedPoints($points)
+    {
+        $this->currentPoints += $points;
+        $this->totalPoints += $points;
+        return $this;
+    }
+
+    /**
+     * @param $points
+     * @return User
+     */
+    public function removePoints($points)
+    {
+        $this->currentPoints -= $points;
+        return $this;
+    }
+
+    /**
+     * @param $points
+     * @return User
+     */
+    public function reservePoints($points)
+    {
+        $this->currentPoints -= $points;
+        $this->reservedPoints += $points;
+        return $this;
+    }
+
+    /**
+     * @param $points
+     * @return User
+     */
+    public function returnPoints($points)
+    {
+        $this->currentPoints += $points;
+        $this->reservedPoints -= $points;
+        return $this;
+    }
+
+    /**
      * Add owned book
      *
      * @param \Knygmainys\BooksBundle\Entity\HaveBook $book
@@ -305,5 +445,106 @@ class User extends BaseUser
     public function getWantedBooks()
     {
         return $this->wantedBooks;
+    }
+
+
+
+    /**
+     * Add contributed book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $book
+     * @return User
+     */
+    public function addContributedBooks($book)
+    {
+        $this->contributedBooks[] = $book;
+
+        return $this;
+    }
+
+    /**
+     * Remove contributed book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\HaveBook $book
+     */
+    public function removeContributedBooks($book)
+    {
+        $this->contributedBooks->removeElement($book);
+    }
+
+    /**
+     * Get contributed books
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContributedBooks()
+    {
+        return $this->contributedBooks;
+    }
+
+    /**
+     * Add received book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\WantBook $book
+     * @return User
+     */
+    public function addReceivedBooks($book)
+    {
+        $this->receivedBooks[] = $book;
+
+        return $this;
+    }
+
+    /**
+     * Remove received book
+     *
+     * @param \Knygmainys\BooksBundle\Entity\WantBook $book
+     */
+    public function removeReceivedBooks($book)
+    {
+        $this->receivedBooks->removeElement($book);
+    }
+
+    /**
+     * Get received books
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getReceivedBooks()
+    {
+        return $this->receivedBooks;
+    }
+
+    /**
+     * Add notification to user
+     *
+     * @param \Knygmainys\UserBundle\Entity\NotificationUser $notification
+     * @return User
+     */
+    public function addNotifications(NotificationUser $notification)
+    {
+        $this->notifications[] = $notification;
+
+        return $this;
+    }
+
+    /**
+     * Remove notification from user
+     *
+     * @param \Knygmainys\UserBundle\Entity\NotificationUser $notification
+     */
+    public function removeNotifications(NotificationUser $notification)
+    {
+        $this->notifications->removeElement($notification);
+    }
+
+    /**
+     * Get notifications to user
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
     }
 }
