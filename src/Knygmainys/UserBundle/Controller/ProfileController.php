@@ -18,10 +18,16 @@ class ProfileController extends Controller
     public function showAction($id)
     {
         $em = $this->get('doctrine.orm.entity_manager');
+        $bookManager = $this->get('knygmainys_books.book_manager');
+
         $userProfile = $em->getRepository('KnygmainysUserBundle:User')->findOneBy(array('id' => $id));
+        $wantedBooks = $bookManager->getWantedList($id);
+        $ownedBooks = $bookManager->getOwnedList($id);
 
         return $this->render('KnygmainysUserBundle:Profile:show.html.twig', [
-            'user' => $userProfile
+            'user' => $userProfile,
+            'wantedBooks' => $wantedBooks,
+            'ownedBooks' => $ownedBooks
         ]);
     }
 

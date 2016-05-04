@@ -1,5 +1,8 @@
 services:
     knygmainys_books.book_manager:
-        class: Knygmainys\BooksBundle\Services\BookManager
+        class: Knygmainys\BooksBundle\Service\BookManager
         arguments:
             entityManager: "@doctrine.orm.entity_manager"
+            notifications: "@knygmainys_user.notifications_service"
+            router: "@router"
+        scope: request

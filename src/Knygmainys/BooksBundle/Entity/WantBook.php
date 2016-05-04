@@ -224,4 +224,27 @@ class WantBook
         return $this->release;
     }
 
+    /**
+     * Set contributor
+     *
+     * @param \Knygmainys\UserBundle\Entity\User $user
+     * @return HaveBook
+     */
+    public function setContributor($user = null)
+    {
+        $this->contributor = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get contributor
+     *
+     * @return \Knygmainys\UserBundle\Entity\User
+     */
+    public function getContributor()
+    {
+        return $this->contributor;
+    }
+
 }

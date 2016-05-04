@@ -8,10 +8,95 @@
         <h2><b>Vartotojas:</b> {{ user.username }}</h2>
         <ul>
             <li><b>Vardas:</b> {{ user.firstName }} {{ user.lastName }}</li>
+            <li><b>Taškai:</b> {{ user.totalPoints }}</li>
             <li><b>Adresas:</b> {{ user.address }}</li>
             <li><b>Miestas:</b> {{ user.city.name }}</li>
             <li><b>Pašto kodas:</b> {{ user.postCode }}</li>
             <li><b>Paskutini kartą buvo prisijungęs:</b> {{ user.lastLogin.format('Y-m-d H:i:s') }}</li>
         </ul>
+        <h4>Norimos knygos:</h4>
+        <div id="book-status-messages"></div>
+        <ul>
+            {%  if (wantedBooks) is not sameas([]) %}
+                {% for wanted in wantedBooks %}
+                    <li>
+                        <b><a href="{{ path('knygmainys_books_show', {'id': wanted.book.id}) }}">{{ wanted.book.title }}</a></b>
+                        {%  if (wanted.release) is not null %}
+                            Leidimas: {{ wanted.release.isbn }}
+                        {% endif %}
+                        {%  if (wanted.points) is not null %}
+                            Papildomi taškai: {{ wanted.points }}
+                        {% endif %}
+                        {% if user.id is not sameas(app.user.id) %}
+                            <button type="button" class="btn btn-primary offer-book" aria-label="Left Align" autocomplete="off" data-id="{{ wanted.book.id }}" data-release-id="{{ wanted.release.id }}" data-user-id="{{ user.id }}">
+                                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Siūlyti knygą
+                            </button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Norimų knygų nėra.</li>
+            {% endif %}
+        </ul>
+        <h4>Turimos knygos:</h4>
+        <ul>
+            {%  if (ownedBooks) is not sameas([]) %}
+                {% for owned in ownedBooks %}
+                    <li>
+                        <b><a href="{{ path('knygmainys_books_show', {'id': owned.book.id}) }}">{{ owned.book.title }}</a></b>
+                        {%  if (owned.release) is not null %}
+                            Leidimas: {{ owned.release.isbn }}
+                        {% endif %}
+                        {% if user.id is not sameas(app.user.id) %}
+                            <button type="button" class="btn btn-primary ask-book" aria-label="Left Align" autocomplete="off" data-id="{{ owned.book.id }}" data-release-id="{{ owned.release.id }}" data-user-id="{{ user.id }}">
+                                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Prašyti knygos
+                            </button>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Turimų knygų nėra.</li>
+            {% endif %}
+        </ul>
+
     </div>
+{% endblock %}
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.offer-book, .ask-book').on('click', function () {
+                var messageBox = $('#book-status-messages');
+                var clicked = $(this);
+                var data = {};
+                data.id = this.getAttribute("data-id");
+                data.release = this.getAttribute("data-release-id");
+                data.user = this.getAttribute("data-user-id");
+
+                if (clicked.is( ".offer-book" )){
+                    data.action = 'offer';
+                } else if (clicked.is( ".ask-book" )){
+                    data.action = 'ask';
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('knygmainys_books_book_transfer') }}",
+                    data: data,
+                    success: function(data) {
+                        var className = '';
+                        if (data['status'] == 'ok') {
+                            className = 'alert alert-success';
+                            clicked.prop("disabled",true);
+                        } else {
+                            className = 'alert alert-danger';
+                        }
+
+                        var content = '<div class="' + className + '">' + data["message"]
+                                + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                        $(content).hide().appendTo(messageBox).fadeIn(1000);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

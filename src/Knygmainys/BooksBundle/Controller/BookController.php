@@ -6,7 +6,8 @@ use Knygmainys\BooksBundle\Entity\Book;
 use Knygmainys\BooksBundle\Entity\Author;
 use Knygmainys\BooksBundle\Entity\BookAuthor;
 use Knygmainys\BooksBundle\Form\SearchType;
-use Knygmainys\BooksBundle\Services\BookManager;
+use Knygmainys\BooksBundle\Entity\HaveBook;
+use Knygmainys\BooksBundle\Service\BookManager;
 use Knygmainys\BooksBundle\Form\BookFormType;
 use Knp\Component\Pager\Paginator;
 use Symfony\Component\Form\FormFactory;
@@ -20,6 +21,11 @@ class BookController extends Controller
 {
     const BOOKS_PER_PAGE = 8;
 
+    /**
+     * Main books page
+     * @param Request $request
+     * @return Response
+     */
     public function indexAction(Request $request)
     {
         $paginator = $this->get('knp_paginator');
@@ -71,6 +77,7 @@ class BookController extends Controller
     }
 
     /**
+     * Create book page
      * @param Request $request
      * @return Response
      */
@@ -130,6 +137,11 @@ class BookController extends Controller
         ]);
     }
 
+    /**
+     * Show book by id
+     * @param Book $book
+     * @return Response
+     */
     public function showAction(Book $book)
     {
         $bookRepository = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book');
@@ -145,21 +157,111 @@ class BookController extends Controller
         ]);
     }
 
+    /**
+     * Show book by id
+     * @param HaveBook $haveBook
+     * @return Response
+     */
+    public function offerAction(HaveBook $haveBook)
+    {
+        if ($haveBook->getReceiver()->getId() != $this->getUser()->getId()) {
+            return $this->redirect($this->generateUrl('knygmainys_main_homepage'));
+        }
+
+        return $this->render('KnygmainysBooksBundle:Book:offer.html.twig', [
+            'offeredBook' => $haveBook
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @return object|JsonResponse
+     */
+    public function offerStatusAction(Request $request)
+    {
+        $bookManager = $this->get('knygmainys_books.book_manager');
+        if ($request->isXmlHttpRequest()) {
+            $bookId = intval(strip_tags($request->request->get('id')));
+            $action = strip_tags($request->request->get('action'));
+            $haveBook = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:HaveBook')->find($bookId);
+
+            if ($haveBook->getReceiver()->getId() != $this->getUser()->getId())
+            {
+                return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
+            }
+
+            $msg = '';
+            if ($action == 'accept') {
+                $msg = $bookManager->acceptBookOffer($haveBook);
+            } elseif ($action == 'reject') {
+                $msg = $bookManager->rejectBookOffer($haveBook);
+            }
+
+            return $bookManager->createJSonResponse($msg, 'ok', 200);
+        } else {
+            return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return object|JsonResponse
+     */
+    public function addBookToUserAction(Request $request)
+    {
+        $bookManager = $this->get('knygmainys_books.book_manager');
+        if ($request->isXmlHttpRequest()) {
+            $bookId = intval(strip_tags($request->request->get('id')));
+            $releaseId = intval(strip_tags($request->request->get('release')));
+            $action = strip_tags($request->request->get('action'));
+            $targetUserId = intval(strip_tags($request->request->get('user')));
+
+            try {
+                $targetUser = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysUserBundle:User')->find($targetUserId);
+
+                if ($targetUser) {
+                    $user = $this->getUser();
+                    $msg = false;
+                    if ($action === 'offer') {
+                        $msg = $bookManager->offerBook($targetUser, $user, $bookId, $releaseId);
+                    } elseif ($action === 'ask') {
+                        $msg = $bookManager->askForBook($targetUser, $user, $bookId, $releaseId);
+                    }
+
+                    if ($msg === true) {
+                        return $bookManager->createJSonResponse('Užklausa sekmingai pridėti, laukite kol ją patvirtins gavėjas!', 'ok', 200);
+                    }
+                }
+
+                return $bookManager->createJSonResponse($msg, 'failed', 200);
+            } catch (Exception $e) {
+                return $bookManager->createJSonResponse($e->getMessage(), 'failed', 200);
+            }
+        } else {
+            return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
+        }
+    }
+
+    /**
+     * Add book to wanted or owned lists
+     * @param Request $request
+     * @return object
+     */
     public function addBookToListAction(Request $request)
     {
         $bookManager = $this->get('knygmainys_books.book_manager');
         if ($request->isXmlHttpRequest()) {
             $bookId = intval(strip_tags($request->request->get('id')));
-            $release = intval(strip_tags($request->request->get('release')));
+            $releaseId = intval(strip_tags($request->request->get('release')));
             $action = strip_tags($request->request->get('action'));
 
             try {
                 $user = $this->getUser();
                 $msg = false;
                 if ($action === 'wanted') {
-                    $msg = $bookManager->addWantedBook($user, $bookId, $release);
+                    $msg = $bookManager->addWantedBook($user, $bookId, $releaseId);
                 } elseif ($action === 'owned') {
-                    $msg = $bookManager->addOwnedBook($user, $bookId, $release);
+                    $msg = $bookManager->addOwnedBook($user, $bookId, $releaseId);
                 }
 
                 if ($msg === true) {
@@ -175,6 +277,11 @@ class BookController extends Controller
         }
     }
 
+    /**
+     * Search book action to return ajax response
+     * @param Request $request
+     * @return object|JsonResponse
+     */
     public function searchBookByTitleAction(Request $request)
     {
         $bookManager = $this->get('knygmainys_books.book_manager');
@@ -187,6 +294,11 @@ class BookController extends Controller
         }
     }
 
+    /**
+     * Search author action to ajax response
+     * @param Request $request
+     * @return object|JsonResponse
+     */
     public function searchAuthorAction(Request $request)
     {
         $bookManager = $this->get('knygmainys_books.book_manager');

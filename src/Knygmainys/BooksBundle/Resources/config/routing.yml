@@ -16,6 +16,17 @@ knygmainys_books_show:
     requirements:
         id: \d+
 
+knygmainys_books_offer:
+    path:     /pasiulymas/{id}
+    defaults: { _controller: KnygmainysBooksBundle:Book:offer }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+knygmainys_books_offer_status:
+    path:     /pasiulymo-statusas
+    defaults: { _controller: KnygmainysBooksBundle:Book:offerStatus }
+
 knygmainys_books_release_create:
     path:     /leidimas/prideti
     defaults: { _controller: KnygmainysBooksBundle:Release:create }
@@ -33,6 +44,10 @@ knygmainys_books_search_release_isbn:
     defaults: { _controller: KnygmainysBooksBundle:Release:searchISBN }
     requirements:
         id: \d+
+
+knygmainys_books_book_transfer:
+    path:     /klausti-vartotojo
+    defaults: { _controller: KnygmainysBooksBundle:Book:addBookToUser }
 
 knygmainys_books_add_book:
     path:     /prideti-knyga

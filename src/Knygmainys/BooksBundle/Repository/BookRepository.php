@@ -8,6 +8,10 @@ use Knygmainys\BooksBundle\Entity\Book;
 class BookRepository extends EntityRepository
 {
 
+    /**
+     * @param string $title
+     * @return array
+     */
     public function findBookByTitle($title)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -19,6 +23,51 @@ class BookRepository extends EntityRepository
         return $results;
     }
 
+    /**
+     * Get the list of user owned books
+     * @param integer $userId
+     * @return array
+     */
+    public function getOwnedBooks($userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('hb, r, b')->from('Knygmainys\BooksBundle\Entity\HaveBook', 'hb')
+            ->leftJoin('hb.book', 'b')
+            ->leftJoin('hb.release', 'r')
+            ->where('hb.user = '.$userId)
+            ->andWhere('hb.status = :status')
+            ->setParameter('status', 'owned')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Get the list of user wanted books
+     * @param integer $userId
+     * @return array
+     */
+    public function getWantedBooks($userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('wb, r, b')->from('Knygmainys\BooksBundle\Entity\WantBook', 'wb')
+            ->leftJoin('wb.book', 'b')
+            ->leftJoin('wb.release', 'r')
+            ->where('wb.user = '.$userId)
+            ->andWhere('wb.status = :status')
+            ->setParameter('status', 'wanted')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Get the list of book authors
+     * @param string $bookId
+     * @return array
+     */
     public function getBookAuthors($bookId)
     {
         $query = $this->getEntityManager()->createQuery("
@@ -32,6 +81,11 @@ class BookRepository extends EntityRepository
         return $query->getResult();
     }
 
+    /**
+     * Get the list of book releases
+     * @param integer $bookId
+     * @return array
+     */
     public function getBookReleases($bookId)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();

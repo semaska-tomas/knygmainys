@@ -194,4 +194,27 @@ class HaveBook
     {
         return $this->release;
     }
+
+    /**
+     * Set receiver
+     *
+     * @param \Knygmainys\UserBundle\Entity\User $user
+     * @return HaveBook
+     */
+    public function setReceiver($user = null)
+    {
+        $this->receiver = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get receiver
+     *
+     * @return \Knygmainys\UserBundle\Entity\User
+     */
+    public function getReceiver()
+    {
+        return $this->receiver;
+    }
 }
