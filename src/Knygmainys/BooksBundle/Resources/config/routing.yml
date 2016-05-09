@@ -16,6 +16,25 @@ knygmainys_books_show:
     requirements:
         id: \d+
 
+knygmainys_books_show_wanted:
+    path:     /norimos
+    defaults: { _controller: KnygmainysBooksBundle:Book:wanted }
+
+knygmainys_books_show_owned:
+    path:     /turimos
+    defaults: { _controller: KnygmainysBooksBundle:Book:owned }
+
+knygmainys_books_request:
+    path:     /prasymas/{id}
+    defaults: { _controller: KnygmainysBooksBundle:Book:request }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+knygmainys_books_request_status:
+    path:     /prasymo-statusas
+    defaults: { _controller: KnygmainysBooksBundle:Book:requestStatus }
+
 knygmainys_books_offer:
     path:     /pasiulymas/{id}
     defaults: { _controller: KnygmainysBooksBundle:Book:offer }

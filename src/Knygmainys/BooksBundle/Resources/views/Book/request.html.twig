@@ -1,0 +1,62 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}
+    <div>Knygos prašymas</div>
+{% endblock %}
+{% block content_body %}
+    <div class="offer-view">
+        <h1>{{ askedBook.book.title }}</h1>
+        <div><h3>Aprašymas:</h3></div>
+        <div>{{ askedBook.book.description }}</div><br>
+        <div><a href="{{ path('knygmainys_books_show', {'id': askedBook.book.id}) }}">Detalesnė knygos informacija</a> </div>
+        <div><h3>Vartotojas:</h3><a href="{{ path('knygmainys_user_profile', {'id': askedBook.receiver.id})}}">{{ askedBook.receiver.firstName }} {{ askedBook.receiver.lastName }}</a></div>
+    </div>
+    <br>
+    <div id="book-status-messages"></div>
+    <div id="actions">
+        <button type="button" class="btn btn-primary accept-book" aria-label="Left Align" autocomplete="off" data-id="{{ askedBook.id }}">
+            <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Primti prašymą
+        </button>
+        <button type="button" class="btn btn-primary reject-book" aria-label="Left Align" autocomplete="off" data-id="{{ askedBook.id }}">
+            <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Atmesti prašymą
+        </button>
+    </div>
+{% endblock %}
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.accept-book, .reject-book').on('click', function () {
+                var messageBox = $('#book-status-messages');
+                var clicked = $(this);
+                var data = {};
+                data.id = this.getAttribute("data-id");
+
+                if (clicked.is( ".accept-book" )){
+                    data.action = 'accept';
+                } else if (clicked.is( ".reject-book" )){
+                    data.action = 'reject';
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('knygmainys_books_request_status') }}",
+                    data: data,
+                    success: function(data) {
+                        var className = '';
+                        if (data['status'] == 'ok') {
+                            className = 'alert alert-success';
+                            clicked.prop("disabled",true);
+                            $('#actions').remove();
+                        } else {
+                            className = 'alert alert-danger';
+                        }
+
+                        var content = '<div class="' + className + '">' + data["message"]
+                                + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                        $(content).hide().appendTo(messageBox).fadeIn(1000);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

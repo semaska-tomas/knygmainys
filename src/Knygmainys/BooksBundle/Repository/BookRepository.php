@@ -64,6 +64,52 @@ class BookRepository extends EntityRepository
     }
 
     /**
+     * Get users who wants specified book
+     * @param $bookId
+     * @param $userId
+     * @return array
+     */
+    public function getWantedBy($bookId, $userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('wb, r, b')->from('Knygmainys\BooksBundle\Entity\WantBook', 'wb')
+            ->leftJoin('wb.book', 'b')
+            ->leftJoin('wb.release', 'r')
+            ->where('b.id = '.$bookId)
+            ->andWhere('wb.status = :status')
+            ->andWhere('wb.user !='.$userId)
+            ->groupby('wb.user')
+            ->setParameter('status', 'wanted')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Get users who owns specified book
+     * @param $bookId
+     * @param $userId
+     * @return array
+     */
+    public function getOwnedBy($bookId, $userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('hb, r, b')->from('Knygmainys\BooksBundle\Entity\HaveBook', 'hb')
+            ->leftJoin('hb.book', 'b')
+            ->leftJoin('hb.release', 'r')
+            ->where('b.id = '.$bookId)
+            ->andWhere('hb.status = :status')
+            ->andWhere('hb.user !='.$userId)
+            ->setParameter('status', 'owned')
+            ->groupby('hb.user')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
      * Get the list of book authors
      * @param string $bookId
      * @return array

@@ -8,7 +8,8 @@
         <h2><b>Vartotojas:</b> {{ user.username }}</h2>
         <ul>
             <li><b>Vardas:</b> {{ user.firstName }} {{ user.lastName }}</li>
-            <li><b>Taškai:</b> {{ user.totalPoints }}</li>
+            <li><b>Turimi taškas:</b> {{ user.currentPoints }}</li>
+            <li><b>Viso taškų:</b> {{ user.totalPoints }}</li>
             <li><b>Adresas:</b> {{ user.address }}</li>
             <li><b>Miestas:</b> {{ user.city.name }}</li>
             <li><b>Pašto kodas:</b> {{ user.postCode }}</li>
@@ -28,9 +29,13 @@
                             Papildomi taškai: {{ wanted.points }}
                         {% endif %}
                         {% if user.id is not sameas(app.user.id) %}
-                            <button type="button" class="btn btn-primary offer-book" aria-label="Left Align" autocomplete="off" data-id="{{ wanted.book.id }}" data-release-id="{{ wanted.release.id }}" data-user-id="{{ user.id }}">
-                                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Siūlyti knygą
-                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-default no-border-radius offer-book"
+                                aria-label="Left Align" autocomplete="off"
+                                data-id="{{ wanted.book.id }}"
+                                data-release-id="{{ wanted.release.id }}"
+                                data-user-id="{{ user.id }}">Siūlyti knygą</button>
                         {% endif %}
                     </li>
                 {% endfor %}
@@ -48,9 +53,14 @@
                             Leidimas: {{ owned.release.isbn }}
                         {% endif %}
                         {% if user.id is not sameas(app.user.id) %}
-                            <button type="button" class="btn btn-primary ask-book" aria-label="Left Align" autocomplete="off" data-id="{{ owned.book.id }}" data-release-id="{{ owned.release.id }}" data-user-id="{{ user.id }}">
-                                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Prašyti knygos
-                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-default no-border-radius ask-book"
+                                aria-label="Left Align"
+                                autocomplete="off"
+                                data-id="{{ owned.book.id }}"
+                                data-release-id="{{ owned.release.id }}"
+                                data-user-id="{{ user.id }}">Prašyti knygos</button>
                         {% endif %}
                     </li>
                 {% endfor %}

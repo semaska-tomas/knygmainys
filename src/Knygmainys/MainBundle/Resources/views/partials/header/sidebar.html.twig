@@ -5,8 +5,8 @@
             <li>Taškai: </li>
             <li>
                 <ul>
-                    <li>Turimi: 0</li>
-                    <li>Rezervuoti: 0</li>
+                    <li>Turimi: {{ app.user.currentPoints }}</li>
+                    <li>Rezervuoti: {{ app.user.reservedPoints }}</li>
                 </ul>
             </li>
             <li class="menu-link"><a href="{{ path('knygmainys_user_profile', {'id': app.user.id}) }}">Mano profilis</a></li>

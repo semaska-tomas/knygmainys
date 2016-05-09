@@ -60,12 +60,29 @@
             <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Turima knyga
         </button>
     </div>
+    <br>
+    <div class="wanted-by-users">
+        <div><h3>Vartotojai norintys šios knygos:</h3></div>
+        <ul>
+            {% for wanted in wantedBy %}
+                <li><a href="{{ path('knygmainys_user_profile', {'id': wanted.user.id})}}">{{ wanted.user.firstName }} {{ wanted.user.firstName }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="owned-by-users">
+        <div><h3>Vartotojai turintys šią knygą:</h3></div>
+        <ul>
+            {% for owned in ownedBy %}
+                <li><a href="{{ path('knygmainys_user_profile', {'id': owned.user.id})}}">{{ owned.user.firstName }} {{ owned.user.firstName }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 {% endblock %}
 {% block bottomScripts %}
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.owned-book, .wanted-book').on('click', function () {
+        $('.owned-book, .book').on('click', function () {
             var messageBox = $('#book-status-messages');
             var clicked = $(this);
             var data = {};

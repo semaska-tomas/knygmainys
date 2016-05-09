@@ -92,6 +92,7 @@ class BookManager
         $searchFilters = array(
             'book' => $bookId,
             'user' => $targetUser->getId(),
+            'status' => 'owned',
             'receiver' => null
         );
 
@@ -101,6 +102,26 @@ class BookManager
 
         $haveBook = $this->em->getRepository('KnygmainysBooksBundle:HaveBook')->findOneBy($searchFilters);
 
+        //check if user have book to offer
+        if ($haveBook == null) {
+            return 'Vartotojo turimų knygų sąraše tokios knygos nėra arba ji rezervuota!';
+        }
+
+        $message = 'Sveiki, vartotojas '.$user->getFirstName().' nori paprašyti
+        Jūsų turimų knygų sąraše esančios knygos - '.$haveBook->getBook()->getTitle().'.
+        Norėdami detalesnės informacijos spauskite "Peržiūrėti" mygtuką po šia žinute.';
+
+        $url = $this->router->generate('knygmainys_books_request', array('id' => $haveBook->getId()), true);
+        $this->notifications->createNotification('Turimos knygos prašymas!', $message, $url, array( array('id' => $targetUser->getId())));
+
+        $user->reservePoints(1);
+        $haveBook->setReceiver($user);
+        $haveBook->setStatus('pending_ask');
+        $this->em->persist($haveBook);
+        $this->em->persist($user);
+        $this->em->flush();
+
+        return true;
     }
 
     /**
@@ -158,19 +179,26 @@ class BookManager
                         )
                     );
             }
+            $contributor = $bookOffer->getUser();
+            $receiver = $bookOffer->getReceiver();
+
+            $contributor->addEarnedPoints(1);
+            $receiver->removePoints(1);
 
             $wantedBook->setStatus('closed');
-            $wantedBook->setContributor($bookOffer->getUser());
+            $wantedBook->setContributor($contributor);
 
             $this->notifications->createNotification('Knygos pasiūlymas priimtas!', $message, $url, array( array('id' => $bookOffer->getUser()->getId())));
 
+            $this->em->persist($contributor);
+            $this->em->persist($receiver);
             $this->em->persist($wantedBook);
             $this->em->persist($bookOffer);
             $this->em->flush();
 
-            return 'Pasiūlymas sekmingai priimtas.';
+            return true;
         } catch (Exception $e) {
-            return 'Nepavyko išsaugoti pkeitimų.';
+            return 'Nepavyko išsaugoti pakeitimų.';
         }
     }
 
@@ -193,9 +221,65 @@ class BookManager
             $this->em->persist($bookOffer);
             $this->em->flush();
 
-            return 'Pasiūlymas sekmingai atmestas.';
+            return true;
         } catch (Exception $e) {
-            return 'Nepavyko išsaugoti pkeitimų.';
+            return 'Nepavyko išsaugoti pakeitimų.';
+        }
+    }
+
+    /**
+     * @param HaveBook $bookRequest
+     * @return string
+     */
+    public function acceptBookRequest(HaveBook $bookRequest)
+    {
+        try {
+            $message = 'Sveiki, vartotojas '.$bookRequest->getUser()->getFirstName().' priemė Jūsų prašymą knygai - '.$bookRequest->getBook()->getTitle().'.
+            Knyga būs išsiūsta Jūsų profilyje nurodytu adresu.';
+
+            $this->notifications->createNotification('Knygos prašymas priimtas!', $message, '', array( array('id' => $bookRequest->getReceiver()->getId())));
+
+            $receiver = $bookRequest->getReceiver();
+            $contributor = $bookRequest->getUser();
+            $receiver->removePoints(1);
+            $contributor->addEarnedPoints(1);
+            $bookRequest->setStatus('closed');
+            $this->em->persist($receiver);
+            $this->em->persist($contributor);
+            $this->em->persist($bookRequest);
+            $this->em->flush();
+
+            return 'Prašymas sekmingai priimtas.';
+        } catch (Exception $e) {
+            return 'Nepavyko išsaugoti pakeitimų.';
+        }
+    }
+
+    /**
+     * @param HaveBook $bookRequest
+     * @return string
+     */
+    public function rejectBookRequest(HaveBook $bookRequest)
+    {
+        try {
+            $message = 'Sveiki, vartotojas '.$bookRequest->getUser()->getFirstName().' atmetė Jūsų prašymą knygai - '.$bookRequest->getBook()->getTitle().'.
+            Knyga gražinta į turimų knygų sąraša.';
+
+            $receiver = $bookRequest->getReceiver();
+            $receiver->addEarnedPoints(1);
+
+            $bookRequest->setReceiver(null);
+            $bookRequest->setStatus('owned');
+
+            $this->notifications->createNotification('Knygos pasiūlymas atmestas!', $message, '', array( array('id' => $bookRequest->getReceiver()->getId())));
+
+            $this->em->persist($receiver);
+            $this->em->persist($bookRequest);
+            $this->em->flush();
+
+            return 'Prašymas sekmingai atmestas.';
+        } catch (Exception $e) {
+            return 'Nepavyko išsaugoti pakeitimų.';
         }
     }
 
@@ -360,8 +444,32 @@ class BookManager
         $this->em->persist($haveBook);
         $this->em->flush();
 
+        $this->checkWantedListForAddedBook($haveBook);
+
         return true;
 
+    }
+
+    public function checkWantedListForAddedBook(HaveBook $haveBook)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $wantedBooks = $qb->select('wb')->from('Knygmainys\BooksBundle\Entity\WantBook', 'wb')
+            ->where('wb.user != '.$haveBook->getUser()->getId())
+            ->andWhere('wb.book = '.$haveBook->getBook()->getId())
+            ->andWhere('wb.status = :status')
+            ->setParameter('status', 'owned')
+            ->getQuery()
+            ->getResult();
+
+        foreach($wantedBooks as $wanted) {
+            $message = 'Sveiki, vartotojas '.$haveBook->getUser()->getFirstName().' katik pridėjo
+            Jūsų norimų knygų sąraše esančia knygą - '.$haveBook->getBook()->getTitle().' į savo turimų knygų sąrašą.
+            Norėdami paprašyti šios knygos peržiūrėkite vartojo profilį paspausdami po žinute esantį mygtuką.';
+
+            $url = $this->router->generate('knygmainys_user_profile', array('id' => $haveBook->getUser()->getId()), true);
+            $this->notifications->createNotification('Vartotojas įkėlė Jūsų norimą knygą!', $message, $url, array( array('id' => $wanted->getUser()->getId())));
+
+        }
     }
 
     /**

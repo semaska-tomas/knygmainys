@@ -1,0 +1,57 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}
+    <div>Turimos knygos</div>
+{% endblock %}
+{% block content_body %}
+    <div class="book-view">
+        <div><h3>Turimos knygos:</h3></div>
+        <ul class="item-list">
+            {% for book in ownedBooks %}
+                <li>
+                    {{ book.book.title }}
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <div id="book-status-messages"></div>
+    </div>
+{% endblock %}
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.owned-book, .wanted-book').on('click', function () {
+                var messageBox = $('#book-status-messages');
+                var clicked = $(this);
+                var data = {};
+                data.id = this.getAttribute("data-id");
+                data.release = this.getAttribute("data-release-id");
+
+                if (clicked.is( ".owned-book" )){
+                    data.action = 'owned';
+                } else if (clicked.is( ".wanted-book" )){
+                    data.action = 'wanted';
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('knygmainys_books_add_book') }}",
+                    data: data,
+                    success: function(data) {
+                        var className = '';
+                        if (data['status'] == 'ok') {
+                            className = 'alert alert-success';
+                            clicked.prop("disabled",true);
+                        } else {
+                            className = 'alert alert-danger';
+                        }
+
+                        var content = '<div class="' + className + '">' + data["message"]
+                                + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                        $(content).hide().appendTo(messageBox).fadeIn(1000);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

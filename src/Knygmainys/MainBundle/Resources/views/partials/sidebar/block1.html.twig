@@ -2,12 +2,10 @@
     <div class="panel-heading menu-panel-heading-1">Meniu</div>
     <div class="panel-body">
         <ul class="custom-list-group">
+            <li><a href="{{ path("homepage") }}">Pradžia</a></li>
             <li><a href="{{ path('knygmainys_books_homepage') }}">Knygos</a></li>
-            <li>Atiduodamos knygos</li>
-            <li>Norimos knygos</li>
-            <li>Prašymai</li>
-            <li>Aktyviausi vartotojai</li>
-            <li>Atsiliepimai</li>
+            <li><a href="{{ path('knygmainys_books_show_owned') }}">Turimos knygos</a></li>
+            <li><a href="{{ path('knygmainys_books_show_wanted') }}">Norimos knygos</a></li>
         </ul>
     </div>
 </div>

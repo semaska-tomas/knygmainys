@@ -1,0 +1,65 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}
+    <div>Norimos knygos</div>
+{% endblock %}
+{% block content_body %}
+    <div class="book-view">
+        <div><h3>Norimos knygos:</h3></div>
+        <ul class="custom-list-group">
+            {% for book in wantedBooks %}
+                <li>
+                    <a href="{{ path('knygmainys_books_show', {'id': book.book.id}) }}">{{ book.book.title }}</a>
+                    {%  if (book.release) is not null %}
+                        Leidimas: {{ book.release.isbn }}
+                    {% endif %}
+                    {%  if (book.status) is sameas('closed') %}
+                        Statusas: Gauta
+                    {% else %}
+
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <div id="book-status-messages"></div>
+    </div>
+{% endblock %}
+{% block bottomScripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.owned-book, .wanted-book').on('click', function () {
+                var messageBox = $('#book-status-messages');
+                var clicked = $(this);
+                var data = {};
+                data.id = this.getAttribute("data-id");
+                data.release = this.getAttribute("data-release-id");
+
+                if (clicked.is( ".owned-book" )){
+                    data.action = 'owned';
+                } else if (clicked.is( ".wanted-book" )){
+                    data.action = 'wanted';
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "{{ path('knygmainys_books_add_book') }}",
+                    data: data,
+                    success: function(data) {
+                        var className = '';
+                        if (data['status'] == 'ok') {
+                            className = 'alert alert-success';
+                            clicked.prop("disabled",true);
+                        } else {
+                            className = 'alert alert-danger';
+                        }
+
+                        var content = '<div class="' + className + '">' + data["message"]
+                                + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                        $(content).hide().appendTo(messageBox).fadeIn(1000);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
