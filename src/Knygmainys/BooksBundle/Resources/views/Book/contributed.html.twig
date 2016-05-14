@@ -1,0 +1,23 @@
+{% extends '::base.html.twig' %}
+
+{% block content_title %}
+    <div>Atiduotos knygos</div>
+{% endblock %}
+{% block content_body %}
+    <div class="book-view">
+        <div><h3>Atiduotos knygos:</h3></div>
+        <ul class="custom-list-group">
+            {% for book in contributedBooks %}
+                <li>
+                    <a href="{{ path('knygmainys_books_show', {'id': book.book.id}) }}">{{ book.book.title }}</a>
+                    {%  if (book.release) is not null %}
+                        <span>Leidimas: {{ book.release.isbn }}</span>
+                    {% endif %}
+                    <span>Gavėjas: {{ book.receiver }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+    </div>
+{% endblock %}
+

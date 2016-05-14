@@ -5,7 +5,6 @@ imports:
     - { resource: "@KnygmainysUserBundle/Resources/config/services.yml" }
     - { resource: "@KnygmainysBooksBundle/Resources/config/services.yml" }
     - { resource: "@KnygmainysMainBundle/Resources/config/services.yml" }
-    - { resource: "@KnygmainysCrawlerBundle/Resources/config/services.yml" }
     - { resource: "@KnygmainysAdminBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed

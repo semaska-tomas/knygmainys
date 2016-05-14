@@ -4,6 +4,8 @@ namespace Knygmainys\BooksBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Knygmainys\BooksBundle\Entity\Book;
+use Knygmainys\BooksBundle\Entity\WantBook;
+use Knygmainys\BooksBundle\Entity\HaveBook;
 
 class BookRepository extends EntityRepository
 {
@@ -34,9 +36,27 @@ class BookRepository extends EntityRepository
         $results = $qb->select('hb, r, b')->from('Knygmainys\BooksBundle\Entity\HaveBook', 'hb')
             ->leftJoin('hb.book', 'b')
             ->leftJoin('hb.release', 'r')
-            ->where('hb.user = '.$userId)
-            ->andWhere('hb.status = :status')
-            ->setParameter('status', 'owned')
+            ->where("hb.status != 'closed'")
+            ->andWhere('hb.user = '.$userId)
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
+
+    /**
+     * Get the list of user received books
+     * @param integer $userId
+     * @return array
+     */
+    public function getReceivedBooks($userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('hb, r, b')->from('Knygmainys\BooksBundle\Entity\HaveBook', 'hb')
+            ->leftJoin('hb.book', 'b')
+            ->leftJoin('hb.release', 'r')
+            ->where("hb.status = 'closed'")
+            ->andWhere('hb.receiver = '.$userId)
             ->getQuery()
             ->getResult();
 
@@ -54,15 +74,33 @@ class BookRepository extends EntityRepository
         $results = $qb->select('wb, r, b')->from('Knygmainys\BooksBundle\Entity\WantBook', 'wb')
             ->leftJoin('wb.book', 'b')
             ->leftJoin('wb.release', 'r')
-            ->where('wb.user = '.$userId)
-            ->andWhere('wb.status = :status')
-            ->setParameter('status', 'wanted')
+            ->where("wb.status != 'closed'")
+            ->andWhere('wb.user = '.$userId)
             ->getQuery()
             ->getResult();
 
         return $results;
     }
 
+    /**
+     * Get the list of user contributed books
+     * @param integer $userId
+     * @return array
+     */
+    public function getContributedBooks($userId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $results = $qb->select('hb, r, b')->from('Knygmainys\BooksBundle\Entity\HaveBook', 'hb')
+            ->leftJoin('hb.book', 'b')
+            ->leftJoin('hb.release', 'r')
+            ->where("hb.status = 'closed'")
+            ->andWhere('hb.user = '.$userId)
+            ->andWhere('hb.receiver != 0')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
     /**
      * Get users who wants specified book
      * @param $bookId
@@ -76,10 +114,9 @@ class BookRepository extends EntityRepository
             ->leftJoin('wb.book', 'b')
             ->leftJoin('wb.release', 'r')
             ->where('b.id = '.$bookId)
-            ->andWhere('wb.status = :status')
+            ->andWhere("wb.status = 'wanted'")
             ->andWhere('wb.user !='.$userId)
             ->groupby('wb.user')
-            ->setParameter('status', 'wanted')
             ->getQuery()
             ->getResult();
 
@@ -99,9 +136,8 @@ class BookRepository extends EntityRepository
             ->leftJoin('hb.book', 'b')
             ->leftJoin('hb.release', 'r')
             ->where('b.id = '.$bookId)
-            ->andWhere('hb.status = :status')
+            ->andWhere("hb.status = 'owned'")
             ->andWhere('hb.user !='.$userId)
-            ->setParameter('status', 'owned')
             ->groupby('hb.user')
             ->getQuery()
             ->getResult();

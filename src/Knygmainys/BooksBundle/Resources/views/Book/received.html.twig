@@ -1,27 +1,20 @@
 {% extends '::base.html.twig' %}
 
 {% block content_title %}
-    <div>Turimos knygos</div>
+    <div>Gautos knygos</div>
 {% endblock %}
 {% block content_body %}
     <div class="book-view">
-        <div><h3>Turimos knygos:</h3></div>
+        <div><h3>Gautos knygos:</h3></div>
         <ul class="custom-list-group">
-            {% for book in ownedBooks %}
+            {% for book in receivedBooks %}
                 <li>
                     <a href="{{ path('knygmainys_books_show', {'id': book.book.id}) }}">{{ book.book.title }}</a>
                     {%  if (book.release) is not null %}
                         <span>Leidimas: {{ book.release.isbn }}</span>
                     {% endif %}
-                    {%  if (book.status) is sameas('pending_offer') %}
-                        <span>Statusas: Siūloma</span>
-                        <span><a href="{{ path('knygmainys_books_offer', {'id': book.id}) }}">Peržiūrėti</a></span>
-                        <span><a class="offer-reject" data-id="{{ book.id }}">Atmesti</a></span>
-                    {% elseif (book.status) is sameas('pending_request') %}
-                        <span>Statusas: Prašoma</span>
-                        <span><a href="{{ path('knygmainys_books_request', {'id': book.id}) }}">Peržiūrėti</a></span>
-                        <span><a href="" class="request-reject" data-id="{{ book.id }}">Atmesti</a></span>
-                    {% endif %}
+                    <span>Siūntėjas: {{ book.user }}</span>
+                    <span><a class="karma" data-id="{{ book.id }}">Pridėri karma</a></span>
                 </li>
             {% endfor %}
         </ul>

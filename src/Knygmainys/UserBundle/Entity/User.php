@@ -311,6 +311,16 @@ class User extends BaseUser
     }
 
     /**
+     * @return User
+     */
+    public function removeFromReserve($points)
+    {
+        $this->reservedPoints -= $points;
+
+        return $this;
+    }
+
+    /**
      * @param integer $reservedPoints
      * @return User
      */
@@ -346,6 +356,16 @@ class User extends BaseUser
     {
         $this->currentPoints += $points;
         $this->totalPoints += $points;
+        return $this;
+    }
+
+    /**
+     * @param $points
+     * @return User
+     */
+    public function addPoints($points)
+    {
+        $this->currentPoints += $points;
         return $this;
     }
 

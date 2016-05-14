@@ -9,17 +9,27 @@
         <div><h3>Aprašymas:</h3></div>
         <div>{{ offeredBook.book.description }}</div><br>
         <div><a href="{{ path('knygmainys_books_show', {'id': offeredBook.book.id}) }}">Detalesnė knygos informacija</a> </div>
-        <div><h3>Vartotojas:</h3><a href="{{ path('knygmainys_user_profile', {'id': offeredBook.user.id})}}">{{ offeredBook.user.firstName }} {{ offeredBook.user.lastName }}</a></div>
+        {% if app.user.id is sameas(offeredBook.user.id) %}
+            <div><h3>Gavėjas:</h3><a href="{{ path('knygmainys_user_profile', {'id': offeredBook.receiver.id})}}">{{ offeredBook.receiver.firstName }} {{ offeredBook.receiver.lastName }}</a></div>
+        {% else %}
+            <div><h3>Sąvininkas:</h3><a href="{{ path('knygmainys_user_profile', {'id': offeredBook.user.id})}}">{{ offeredBook.user.firstName }} {{ offeredBook.user.lastName }}</a></div>
+        {% endif %}
     </div>
     <br>
     <div id="book-status-messages"></div>
     <div>
-        <button type="button" class="btn btn-primary accept-book" aria-label="Left Align" autocomplete="off" data-id="{{ offeredBook.id }}">
-            <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Primti pasiūlymą
-        </button>
-        <button type="button" class="btn btn-primary reject-book" aria-label="Left Align" autocomplete="off" data-id="{{ offeredBook.id }}">
-            <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Atmesti pasiūlymą
-        </button>
+        {% if app.user.id is sameas(offeredBook.user) %}
+            <button type="button" class="btn btn-primary reject-book" aria-label="Left Align" autocomplete="off" data-id="{{ offeredBook.id }}">
+                <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Atšaukti pasiūlymą
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-primary accept-book" aria-label="Left Align" autocomplete="off" data-id="{{ offeredBook.id }}">
+                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> Primti pasiūlymą
+            </button>
+            <button type="button" class="btn btn-primary reject-book" aria-label="Left Align" autocomplete="off" data-id="{{ offeredBook.id }}">
+                <span class="glyphicon glyphicon-align-right" aria-hidden="true"></span> Atmesti pasiūlymą
+            </button>
+        {% endif %}
     </div>
 {% endblock %}
 {% block bottomScripts %}

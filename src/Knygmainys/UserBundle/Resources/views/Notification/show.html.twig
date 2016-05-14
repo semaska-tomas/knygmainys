@@ -19,7 +19,9 @@
             <div>{{ notification.notification.text }}</div>
             <br>
             <div>
-                <a class="btn btn-md btn-primary" href="{{ notification.notification.link }}">Peržiūrėti</a>
+                {% if notification.notification.link is not sameas('') %}
+                    <a class="btn btn-md btn-primary" href="{{ notification.notification.link }}">Peržiūrėti</a>
+                {% endif %}
                 <a class="btn btn-md btn-primary notification-delete">Pašalinti</a>
             </div>
         </div>

@@ -24,6 +24,14 @@ knygmainys_books_show_owned:
     path:     /turimos
     defaults: { _controller: KnygmainysBooksBundle:Book:owned }
 
+knygmainys_books_show_contributed:
+    path:     /atiduotos
+    defaults: { _controller: KnygmainysBooksBundle:Book:contributed }
+
+knygmainys_books_show_received:
+    path:     /gautos
+    defaults: { _controller: KnygmainysBooksBundle:Book:received }
+
 knygmainys_books_request:
     path:     /prasymas/{id}
     defaults: { _controller: KnygmainysBooksBundle:Book:request }

@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new Knygmainys\UserBundle\KnygmainysUserBundle(),
             new Knygmainys\BooksBundle\KnygmainysBooksBundle(),
             new Knygmainys\MainBundle\KnygmainysMainBundle(),
-            new Knygmainys\CrawlerBundle\KnygmainysCrawlerBundle(),
             new Knygmainys\AdminBundle\KnygmainysAdminBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),

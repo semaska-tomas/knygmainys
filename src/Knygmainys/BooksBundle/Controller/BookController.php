@@ -177,6 +177,36 @@ class BookController extends Controller
     }
 
     /**
+     * Show user received books
+     * @param Request $request
+     * @return Response
+     */
+    public function receivedAction(Request $request)
+    {
+        $bookRepository = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book');
+        $receivedBooks = $bookRepository->getReceivedBooks($this->getUser()->getId());
+
+        return $this->render('KnygmainysBooksBundle:Book:received.html.twig', [
+            'receivedBooks' => $receivedBooks
+        ]);
+    }
+
+    /**
+     * Show user contributed books
+     * @param Request $request
+     * @return Response
+     */
+    public function contributedAction(Request $request)
+    {
+        $bookRepository = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book');
+        $contributedBooks = $bookRepository->getContributedBooks($this->getUser()->getId());
+
+        return $this->render('KnygmainysBooksBundle:Book:contributed.html.twig', [
+            'contributedBooks' => $contributedBooks
+        ]);
+    }
+
+    /**
      * Show user owned books
      * @param Request $request
      * @return Response
@@ -198,13 +228,12 @@ class BookController extends Controller
      */
     public function offerAction(HaveBook $haveBook)
     {
-        if ($haveBook->getReceiver()->getId() != $this->getUser()->getId()) {
-            return $this->redirect($this->generateUrl('knygmainys_main_homepage'));
+        if (($haveBook->getReceiver()->getId() == $this->getUser()->getId() || $haveBook->getUser()->getId() == $this->getUser()->getId()) && $haveBook->getStatus() != 'closed') {
+            return $this->render('KnygmainysBooksBundle:Book:offer.html.twig', [
+                'offeredBook' => $haveBook
+            ]);
         }
-
-        return $this->render('KnygmainysBooksBundle:Book:offer.html.twig', [
-            'offeredBook' => $haveBook
-        ]);
+        return $this->redirect($this->generateUrl('knygmainys_main_homepage'));
     }
 
     /**
@@ -219,19 +248,18 @@ class BookController extends Controller
             $action = strip_tags($request->request->get('action'));
             $haveBook = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:HaveBook')->find($bookId);
 
-            if ($haveBook->getReceiver()->getId() != $this->getUser()->getId())
+            if (($haveBook->getReceiver()->getId() == $this->getUser()->getId() || ($haveBook->getUser()->getId() == $this->getUser()->getId() && $action == 'reject')))
             {
-                return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
-            }
+                $msg = '';
+                if ($action == 'accept') {
+                    $msg = $bookManager->acceptBookOffer($haveBook);
+                } elseif ($action == 'reject') {
+                    $msg = $bookManager->rejectBookOffer($haveBook);
+                }
 
-            $msg = '';
-            if ($action == 'accept') {
-                $msg = $bookManager->acceptBookOffer($haveBook);
-            } elseif ($action == 'reject') {
-                $msg = $bookManager->rejectBookOffer($haveBook);
+                return $bookManager->createJSonResponse($msg, 'ok', 200);
             }
-
-            return $bookManager->createJSonResponse($msg, 'ok', 200);
+            return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
         } else {
             return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
         }
@@ -244,13 +272,12 @@ class BookController extends Controller
      */
     public function requestAction(HaveBook $haveBook)
     {
-        if ($haveBook->getUser()->getId() != $this->getUser()->getId() || $haveBook->getStatus() == 'closed') {
-            return $this->redirect($this->generateUrl('knygmainys_main_homepage'));
+        if (($haveBook->getUser()->getId() == $this->getUser()->getId() || $haveBook->getReceiver()->getId() == $this->getUser()->getId()) && $haveBook->getStatus() != 'closed') {
+            return $this->render('KnygmainysBooksBundle:Book:request.html.twig', [
+                'askedBook' => $haveBook
+            ]);
         }
-
-        return $this->render('KnygmainysBooksBundle:Book:request.html.twig', [
-            'askedBook' => $haveBook
-        ]);
+        return $this->redirect($this->generateUrl('knygmainys_main_homepage'));
     }
 
     /**
@@ -265,26 +292,27 @@ class BookController extends Controller
             $action = strip_tags($request->request->get('action'));
             $haveBook = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:HaveBook')->find($bookId);
 
-            if ($haveBook->getUser()->getId() != $this->getUser()->getId() || $haveBook->getStatus() == 'closed')
+            if (($haveBook->getUser()->getId() == $this->getUser()->getId() || $haveBook->getReceiver()->getId() == $this->getUser()->getId()) && $haveBook->getStatus() != 'closed')
             {
-                return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 200);
+                $msg = '';
+                $status = 'failed';
+                if ($action == 'accept' && $haveBook->getReceiver()->getId() != $this->getUser()) {
+                    $msg = $bookManager->acceptBookRequest($haveBook);
+                    if ($msg) {
+                        $msg = 'Prašymas sekmingai priimtas.';
+                        $status = 'ok';
+                    }
+                } elseif ($action == 'reject') {
+                    $msg = $bookManager->rejectBookRequest($haveBook);
+                    if ($msg) {
+                        $msg = 'Prašymas sekmingai atmestas.';
+                    }
+                }
+
+                return $bookManager->createJSonResponse($msg, $status, 200);
             }
 
-            $msg = '';
-            $status = 'failed';
-            if ($action == 'accept') {
-                $msg = $bookManager->acceptBookRequest($haveBook);
-                if ($msg) {
-                    $msg = 'Prašymas sekmingai priimtas.';
-                }
-            } elseif ($action == 'reject') {
-                $msg = $bookManager->rejectBookRequest($haveBook);
-                if ($msg) {
-                    $msg = 'Prašymas sekmingai atmestas.';
-                }
-            }
-
-            return $bookManager->createJSonResponse($msg, $status, 200);
+            return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 200);
         } else {
             return $bookManager->createJSonResponse('Jūs neturite priegos!', 'failed', 400);
         }
@@ -345,12 +373,16 @@ class BookController extends Controller
             $bookId = intval(strip_tags($request->request->get('id')));
             $releaseId = intval(strip_tags($request->request->get('release')));
             $action = strip_tags($request->request->get('action'));
-
             try {
                 $user = $this->getUser();
                 $msg = false;
                 if ($action === 'wanted') {
-                    $msg = $bookManager->addWantedBook($user, $bookId, $releaseId);
+                    $points = strip_tags($request->request->get('points'));
+                    if ($points < $user->getCurrentPoints() && $points >= 0) {
+                        $msg = $bookManager->addWantedBook($user, $bookId, $releaseId, $points);
+                    } else {
+                        return $bookManager->createJSonResponse('Jūs neturite tiek taškų!', 'failed', 200);
+                    }
                 } elseif ($action === 'owned') {
                     $msg = $bookManager->addOwnedBook($user, $bookId, $releaseId);
                 }

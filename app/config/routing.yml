@@ -6,10 +6,6 @@ knygmainys_admin:
     resource: "@KnygmainysAdminBundle/Resources/config/routing.yml"
     prefix:   /admin
 
-knygmainys_crawler:
-    resource: "@KnygmainysCrawlerBundle/Resources/config/routing.yml"
-    prefix:   /crawler
-
 knygmainys_main:
     resource: "@KnygmainysMainBundle/Resources/config/routing.yml"
     prefix:   /

@@ -19,11 +19,13 @@
 .menu-panel-heading-2,
 .panel-default > .menu-panel-heading-2 {
   background-color: #29abe0;
-  color: #FFF; }
+  color: #FFF;
+  font-weight: bold; }
 
 .menu-panel-heading-2,
 .panel-default > .menu-panel-heading-2 {
-  background-color: #e93c62; }
+  background-color: #e93c62;
+  font-weight: bold; }
 
 .main-content-sidebar .panel-body {
   background-color: #fff;

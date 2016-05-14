@@ -11,7 +11,8 @@
   padding: 10px 55px; }
 
 .header-main-menu {
-  height: 60px; }
+  height: 60px;
+  padding-left: 40px; }
 
 .header-logo {
   font-family: 'Raleway';
@@ -54,4 +55,9 @@
 
 .header-sidebar-user {
   display: table-cell;
-  vertical-align: middle; }
+  vertical-align: middle;
+  padding-left: 30px; }
+
+.header-sidebar-user .user {
+  font-size: 20px;
+  padding-bottom: 15px; }

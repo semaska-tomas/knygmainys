@@ -13,10 +13,8 @@
                     {%  if (book.release) is not null %}
                         Leidimas: {{ book.release.isbn }}
                     {% endif %}
-                    {%  if (book.status) is sameas('closed') %}
-                        Statusas: Gauta
-                    {% else %}
-
+                    {%  if (book.status) is sameas('wanted') %}
+                        Statusas: Norima
                     {% endif %}
                 </li>
             {% endfor %}

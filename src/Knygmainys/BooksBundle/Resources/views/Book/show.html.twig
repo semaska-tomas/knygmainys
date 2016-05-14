@@ -82,18 +82,51 @@
 {% block bottomScripts %}
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.owned-book, .book').on('click', function () {
+        $('.wanted-book').on('click', function () {
+            var container = $(this).parent();
+            $('#points').slideUp("fast", function() {
+                $(this).remove();
+            });
+            container.append('<form id="points"><br><input class="form-control" id="points-value" placeholder="Taškų kiekis..." required="required" type="text"><input class="btn btn-md btn-primary btn-block" id="points-submit" value="Pridėti"></form>');
+        });
+
+        $(document).on('click', '#points-submit', function(){
+            var messageBox = $('#book-status-messages');
+            var clicked = $(this);
+            var dataDiv = $(this).parent().parent().find(".wanted-book");
+
+            var data = {};
+            data.id = dataDiv.attr("data-id");
+            data.release = dataDiv.attr("data-release-id");
+            data.action = 'wanted';
+            data.points = $('#points-value').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ path('knygmainys_books_add_book') }}",
+                data: data,
+                success: function(data) {
+                    var className = '';
+                    if (data['status'] == 'ok') {
+                        className = 'alert alert-success';
+                        clicked.prop("disabled",true);
+                    } else {
+                        className = 'alert alert-danger';
+                    }
+
+                    var content = '<div class="' + className + '">' + data["message"]
+                            + '<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a></div>';
+                    $(content).hide().appendTo(messageBox).fadeIn(1000);
+                }
+            });
+        });
+
+        $('.owned-book').on('click', function () {
             var messageBox = $('#book-status-messages');
             var clicked = $(this);
             var data = {};
             data.id = this.getAttribute("data-id");
             data.release = this.getAttribute("data-release-id");
-
-            if (clicked.is( ".owned-book" )){
-                data.action = 'owned';
-            } else if (clicked.is( ".wanted-book" )){
-                data.action = 'wanted';
-            }
+            data.action = 'owned';
 
             $.ajax({
                 type: "POST",
