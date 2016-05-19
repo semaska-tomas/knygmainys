@@ -19,35 +19,35 @@ class Notification
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=80)
      */
-    private $title;
+    protected $title;
 
     /**
      * @var string
      *
      * @ORM\Column(name="text", type="string", length=255)
      */
-    private $text;
+    protected $text;
 
     /**
      * @var string
      *
      * @ORM\Column(name="link", type="string", length=255)
      */
-    private $link;
+    protected $link;
 
     /**
      * @ORM\Column(type="datetime")
      *
      * @Assert\DateTime()
      */
-    private $date;
+    protected $date;
 
     /**
      *  notification - user association

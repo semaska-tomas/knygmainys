@@ -37,6 +37,7 @@ class SearchType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'required' => true,
+                'data' => 'all'
             ))
             ->add('search', 'submit', ['label' => 'Ieškoti'])
             ->setMethod('GET')

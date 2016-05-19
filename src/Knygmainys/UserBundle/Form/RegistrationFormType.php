@@ -15,6 +15,7 @@ class RegistrationFormType extends AbstractType
             ->add('firstName', 'text', array('label' => 'Vardas'))
             ->add('lastName', 'text', array('label' => 'Pavardė'))
             ->add('city', EntityType::class, array(
+                'label' => 'Miestas',
                 'class' => 'Knygmainys\UserBundle\Entity\City',
                 'choice_label' => 'name',
             ))

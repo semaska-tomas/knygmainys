@@ -97,7 +97,7 @@ class Release
      *
      * @ORM\Column(name="cover_path", type="string", length=255, nullable=true)
      */
-    private $coverPath;
+    protected $coverPath;
 
     /**
      * book release association

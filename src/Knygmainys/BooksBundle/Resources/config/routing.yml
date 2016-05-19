@@ -57,6 +57,8 @@ knygmainys_books_offer_status:
 knygmainys_books_release_create:
     path:     /leidimas/prideti
     defaults: { _controller: KnygmainysBooksBundle:Release:create }
+    requirements:
+        id: \d+
 
 knygmainys_books_search_book_title:
     path:     /ieskoti-knygos

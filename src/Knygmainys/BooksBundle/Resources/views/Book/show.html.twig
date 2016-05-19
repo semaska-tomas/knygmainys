@@ -17,6 +17,7 @@
         {% endfor %}
     </ul>
     <div><h3>Ledimai:</h3></div>
+    <a href="{{ path('knygmainys_books_release_create', {'id': book.id}) }}">Pridėti leidimą</a>
     <ul class="item-list">
     {% for release in releases %}
         <li class="book-release-item">
@@ -87,7 +88,7 @@
             $('#points').slideUp("fast", function() {
                 $(this).remove();
             });
-            container.append('<form id="points"><br><input class="form-control" id="points-value" placeholder="Taškų kiekis..." required="required" type="text"><input class="btn btn-md btn-primary btn-block" id="points-submit" value="Pridėti"></form>');
+            container.append('<form id="points"><br>Automatiškai skirimas taškų kiekis yra 1, tačiau jai norite kad knygos prašymas labiau trauktų vartotoją, galite skirti ir daugiau turimų taškų.<input class="form-control" id="points-value" placeholder="Taškų kiekis..." required="required" type="text"><input class="btn btn-md btn-primary btn-block" id="points-submit" value="Pridėti"></form>');
         });
 
         $(document).on('click', '#points-submit', function(){

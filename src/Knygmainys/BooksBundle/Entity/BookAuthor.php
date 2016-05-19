@@ -21,7 +21,7 @@ class BookAuthor
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      *
@@ -29,7 +29,7 @@ class BookAuthor
      * @ORM\JoinColumn(name="book_id", referencedColumnName="id")
      *
      */
-    private $book;
+    protected $book;
 
     /**
      *
@@ -37,7 +37,7 @@ class BookAuthor
      * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
      *
      */
-    private $author;
+    protected $author;
 
     /**
      * Get id

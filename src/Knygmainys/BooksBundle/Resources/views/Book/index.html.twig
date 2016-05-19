@@ -42,28 +42,38 @@
             {{ form_end(form) }}
         </div>
     </div>
-    <div class="row books-view">
-        {% for book in books %}
-            <div class="col-lg-4">
-                <ul class="book-item">
-                    {% for release in book.bookRelease|slice(0,1) %}
-                        <li><img class="book-image" src="{{ asset(release.release.getWebPath) }}"/></li>
+
+    {% set item = 3 %}
+    {% if books is empty %}
+        <p>Knygų pagal Jūsų užklausa nerasta.</p>
+    {% endif %}
+    {% for book in books %}
+        {% if item is divisible by(3) %}
+            <div class="row books-view">
+        {% endif %}
+        {% set item = item + 1 %}
+        <div class="col-lg-4">
+            <ul class="book-item">
+                {% for release in book.bookRelease|slice(0,1) %}
+                    <li><a href="{{ path('knygmainys_books_show', {'id': book.id}) }}"><img class="book-image" src="{{ asset(release.release.getWebPath) }}"/></a></li>
+                {% endfor %}
+                <li class="book-item-title"><a href="{{ path('knygmainys_books_show', {'id': book.id}) }}">{{ book.title }}</a></li>
+                <li class="book-item-authors">
+                    {% for author in book.author %}
+                        {{ author.author.firstName }} {{ author.author.lastName }}
                     {% endfor %}
-                    <li class="book-item-title"><a href="{{ path('knygmainys_books_show', {'id': book.id}) }}">{{ book.title }}</a></li>
-                    <li class="book-item-authors">
-                        {% for author in book.author %}
-                            {{ author.author.firstName }} {{ author.author.lastName }}
-                        {% endfor %}
-                    </li>
-                    <li class="book-item-category"><b>{{ book.category.name }}</b></li>
-                </ul>
+                </li>
+                <li class="book-item-category"><b>{{ book.category.name }}</b></li>
+            </ul>
+        </div>
+        {% if item is divisible by(3) %}
             </div>
-        {% endfor %}
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="navigation center-block">
-                    {{ knp_pagination_render(books) }}
-                </div>
+        {% endif %}
+    {% endfor %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="navigation center-block">
+                {{ knp_pagination_render(books) }}
             </div>
         </div>
     </div>

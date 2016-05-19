@@ -21,7 +21,7 @@ class WantBook
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -29,21 +29,21 @@ class WantBook
      * @ORM\Column(name="status", type="string", length=255)
      *
      */
-    private $status;
+    protected $status;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="points", type="integer")
      */
-    private $points;
+    protected $points;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="datetime", type="date")
+     * @ORM\Column(name="updated", type="date")
      */
-    private $updated;
+    protected $updated;
 
     /**
      *
@@ -51,7 +51,7 @@ class WantBook
      * @ORM\JoinColumn(name="book_id", referencedColumnName="id")
      *
      */
-    private $book;
+    protected $book;
 
     /**
     *
@@ -59,7 +59,7 @@ class WantBook
     * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
     *
     */
-    private $release;
+    protected $release;
 
     /**
      *
@@ -67,7 +67,7 @@ class WantBook
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */
-    private $user;
+    protected $user;
 
     /**
      *
@@ -75,7 +75,7 @@ class WantBook
      * @ORM\JoinColumn(name="contributor_id", referencedColumnName="id", nullable=true)
      *
      */
-    private $contributor;
+    protected $contributor;
 
     /**
      * Get id

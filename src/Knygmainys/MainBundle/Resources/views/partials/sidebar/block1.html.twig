@@ -3,11 +3,13 @@
     <div class="panel-body">
         <ul class="custom-list-group">
             <li><a href="{{ path("homepage") }}">Pradžia</a></li>
+            {% if not app.user %}
+                <li><a href="{{ path("fos_user_registration_register") }}">Registracija</a></li>
+            {% else %}
+                <li class="menu-link"><a href="{{ path('knygmainys_user_profile', {'id': app.user.id}) }}">Mano profilis</a></li>
+            {% endif %}
             <li><a href="{{ path('knygmainys_books_homepage') }}">Knygos</a></li>
-            <li><a href="{{ path('knygmainys_books_show_owned') }}">Turimos knygos</a></li>
-            <li><a href="{{ path('knygmainys_books_show_wanted') }}">Norimos knygos</a></li>
-            <li><a href="{{ path('knygmainys_books_show_contributed') }}">Atiduotos knygos</a></li>
-            <li><a href="{{ path('knygmainys_books_show_received') }}">Gautos knygos</a></li>
+            <li><a href="{{ path('knygmainys_books_create') }}">Pridėti knygą</a></li>
         </ul>
     </div>
 </div>

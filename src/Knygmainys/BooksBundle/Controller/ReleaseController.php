@@ -49,9 +49,8 @@ class ReleaseController extends Controller
         $customErrors = [];
         $release = new Release();
 
-        $bookId = intval($request->request->get('bookId'));
+        $bookId = intval($request->query->get('id'));
         $book = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:Book')->find($bookId);
-
         $form = $this->createForm(new ReleaseFormType(), $release);
         $form->handleRequest($request);
 

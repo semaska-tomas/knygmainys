@@ -19,7 +19,7 @@ class NotificationUser
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      *
@@ -27,7 +27,7 @@ class NotificationUser
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */
-    private $user;
+    protected $user;
 
     /**
      *
@@ -35,12 +35,12 @@ class NotificationUser
      * @ORM\JoinColumn(name="notification_id", referencedColumnName="id")
      *
      */
-    private $notification;
+    protected $notification;
 
     /**
      * @ORM\Column(type="boolean", nullable=false, options={"default" : 0})
      */
-    private $seen;
+    protected $seen;
 
     /**
      * @return int

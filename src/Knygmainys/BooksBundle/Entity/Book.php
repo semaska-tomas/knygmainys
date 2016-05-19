@@ -70,9 +70,9 @@ class Book
     /**
      * @var integer
      *
-     * @ORM\Column(name="datetime")
+     * @ORM\Column(name="created", type="date")
      */
-    private $created;
+    protected $created;
 
     /**
      * book release association

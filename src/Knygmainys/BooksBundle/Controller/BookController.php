@@ -31,37 +31,38 @@ class BookController extends Controller
         $paginator = $this->get('knp_paginator');
         $qb = $this->get('doctrine.orm.entity_manager')
             ->getRepository('KnygmainysBooksBundle:Book')
-            ->createQueryBuilder('b');
+            ->createQueryBuilder('book');
 
-        $query = $qb->select('b');
+        $query = $qb->select('book');
 
         $searchForm = $this->get('form.factory')->createNamed('', new SearchType());
         $searchForm->handleRequest($request);
 
+        //filter books if search form is submitted
         if ($searchForm->isSubmitted()) {
             $formData = $searchForm->getData();
 
             if (!is_null($formData['search_text'])) {
-                $query = $query->where('b.title LIKE :searchText')
+                $query = $query->where('book.title LIKE :searchText')
                     ->setParameter('searchText', '%' . $formData['search_text'] . '%');
             }
 
             if (!$formData['category']->isEmpty()) {
-                $query = $query->andWhere('b.category IN (:category)')
+                $query = $query->andWhere('book.category IN (:category)')
                     ->setParameter('category', $formData['category']->toArray());
             }
 
             if ($formData['type'] != null) {
                 if ($formData['type'] == 'wanted') {
-                    $query = $query->innerJoin('b.wantedBook', 'wanted');
+                    $query = $query->innerJoin('book.wantedBook', 'wanted');
                 } elseif ($formData['type'] == 'owned') {
-                    $query = $query->innerJoin('b.ownedBook', 'owned');
+                    $query = $query->innerJoin('book.ownedBook', 'owned');
                 }
             }
         }
 
         $query = $query
-            ->orderBy('b.created')
+            ->orderBy('book.created')
             ->getQuery();
 
         $books = $paginator->paginate(
@@ -122,13 +123,11 @@ class BookController extends Controller
                 $bookAuthor->setBook($book);
                 $em->persist($bookAuthor);
             }
-
+            $book->setCreated();
             $em->persist($book);
             $em->flush();
 
-            $this->getRequest()->headers->set('Content-Type', 'application/json');
-            $this->getRequest()->request->replace(array("bookId"=> $book->getId()));
-            return $this->forward('KnygmainysBooksBundle:Release:create');
+            return $this->redirectToRoute('knygmainys_books_release_create', array('id' => $book->getId()));
         }
 
         return $this->render('KnygmainysBooksBundle:Book:create.html.twig', [
@@ -290,20 +289,20 @@ class BookController extends Controller
         if ($request->isXmlHttpRequest()) {
             $bookId = intval(strip_tags($request->request->get('id')));
             $action = strip_tags($request->request->get('action'));
-            $haveBook = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:HaveBook')->find($bookId);
+            $bookRequest = $this->get('doctrine.orm.entity_manager')->getRepository('KnygmainysBooksBundle:HaveBook')->find($bookId);
 
-            if (($haveBook->getUser()->getId() == $this->getUser()->getId() || $haveBook->getReceiver()->getId() == $this->getUser()->getId()) && $haveBook->getStatus() != 'closed')
+            if (($bookRequest->getUser()->getId() == $this->getUser()->getId() || $bookRequest->getReceiver()->getId() == $this->getUser()->getId()) && $bookRequest->getStatus() != 'closed')
             {
                 $msg = '';
                 $status = 'failed';
-                if ($action == 'accept' && $haveBook->getReceiver()->getId() != $this->getUser()) {
-                    $msg = $bookManager->acceptBookRequest($haveBook);
+                if ($action == 'accept' && $bookRequest->getReceiver()->getId() != $this->getUser()->getId()) {
+                    $msg = $bookManager->acceptBookRequest($bookRequest);
                     if ($msg) {
                         $msg = 'Prašymas sekmingai priimtas.';
                         $status = 'ok';
                     }
                 } elseif ($action == 'reject') {
-                    $msg = $bookManager->rejectBookRequest($haveBook);
+                    $msg = $bookManager->rejectBookRequest($bookRequest);
                     if ($msg) {
                         $msg = 'Prašymas sekmingai atmestas.';
                     }
@@ -340,16 +339,11 @@ class BookController extends Controller
                     if ($action === 'offer') {
                         $msg = $bookManager->offerBook($targetUser, $user, $bookId, $releaseId);
                     } elseif ($action === 'ask') {
-                        if ($user->getCurrentPoints() > 1) {
-                            $msg = $bookManager->askForBook($targetUser, $user, $bookId, $releaseId);
-                        } else {
-                            $msg = 'Jūs neturite taškų, kad galėtūmėte daryti prašymus';
+                        $msg = $bookManager->askForBook($targetUser, $user, $bookId, $releaseId);
+                        if ($msg === true) {
+                            return $bookManager->createJSonResponse('Užklausa sekmingai pridėta, laukite kol ją patvirtins gavėjas!', 'ok', 200);
                         }
-                    }
-
-                    if ($msg === true) {
-                        return $bookManager->createJSonResponse('Užklausa sekmingai pridėta, laukite kol ją patvirtins gavėjas!', 'ok', 200);
-                    }
+                     }
                 }
 
                 return $bookManager->createJSonResponse($msg, 'failed', 200);
@@ -378,6 +372,9 @@ class BookController extends Controller
                 $msg = false;
                 if ($action === 'wanted') {
                     $points = strip_tags($request->request->get('points'));
+                    if ($points == null) {
+                        $points = 1;
+                    }
                     if ($points < $user->getCurrentPoints() && $points >= 0) {
                         $msg = $bookManager->addWantedBook($user, $bookId, $releaseId, $points);
                     } else {

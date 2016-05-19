@@ -7,6 +7,9 @@
     <div class="book-view">
         <div><h3>Turimos knygos:</h3></div>
         <ul class="custom-list-group">
+            {% if ownedBooks is empty %}
+                <li>Knygų šiame saraše nėra.</li>
+            {% endif %}
             {% for book in ownedBooks %}
                 <li>
                     <a href="{{ path('knygmainys_books_show', {'id': book.book.id}) }}">{{ book.book.title }}</a>
@@ -15,12 +18,10 @@
                     {% endif %}
                     {%  if (book.status) is sameas('pending_offer') %}
                         <span>Statusas: Siūloma</span>
-                        <span><a href="{{ path('knygmainys_books_offer', {'id': book.id}) }}">Peržiūrėti</a></span>
-                        <span><a class="offer-reject" data-id="{{ book.id }}">Atmesti</a></span>
+                        <span><a href="{{ path('knygmainys_books_request', {'id': book.id}) }}">Peržiūrėti</a></span>
                     {% elseif (book.status) is sameas('pending_request') %}
                         <span>Statusas: Prašoma</span>
                         <span><a href="{{ path('knygmainys_books_request', {'id': book.id}) }}">Peržiūrėti</a></span>
-                        <span><a href="" class="request-reject" data-id="{{ book.id }}">Atmesti</a></span>
                     {% endif %}
                 </li>
             {% endfor %}

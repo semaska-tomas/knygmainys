@@ -9,8 +9,8 @@
                     <li>Rezervuoti: {{ app.user.reservedPoints }}</li>
                 </ul>
             </li>
-            <li class="menu-link"><a href="{{ path('knygmainys_user_profile', {'id': app.user.id}) }}">Mano profilis</a></li>
             <li class="menu-link"><a href="{{ path('knygmainys_user.notification') }}">Pranešimai ({{ userNotifications.getUnreadNotificationsCount(app.user.id) }})</a></li>
+            <li class="menu-link"><a href="{{ path('fos_user_security_logout') }}">Atsijungti</a></li>
         </ul>
     </div>
 {% else %}

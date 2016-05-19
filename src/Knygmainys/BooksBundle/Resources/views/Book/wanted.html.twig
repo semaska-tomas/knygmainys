@@ -7,6 +7,9 @@
     <div class="book-view">
         <div><h3>Norimos knygos:</h3></div>
         <ul class="custom-list-group">
+            {% if wantedBooks is empty %}
+                <li>Knygų šiame saraše nėra.</li>
+            {% endif %}
             {% for book in wantedBooks %}
                 <li>
                     <a href="{{ path('knygmainys_books_show', {'id': book.book.id}) }}">{{ book.book.title }}</a>

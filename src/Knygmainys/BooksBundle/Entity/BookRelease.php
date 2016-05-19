@@ -21,7 +21,7 @@ class BookRelease
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      *
@@ -29,7 +29,7 @@ class BookRelease
      * @ORM\JoinColumn(name="book_id", referencedColumnName="id")
      *
      */
-    private $book;
+    protected $book;
 
     /**
      *
@@ -37,7 +37,7 @@ class BookRelease
      * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
      *
      */
-    private $release;
+    protected $release;
 
     /**
      * Get id

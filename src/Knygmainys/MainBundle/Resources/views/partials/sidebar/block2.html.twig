@@ -1,9 +1,11 @@
 <div class="panel panel-default">
-    <div class="panel-heading menu-panel-heading-1">Paieška</div>
+    <div class="panel-heading menu-panel-heading-1">Mano Knygos</div>
     <div class="panel-body">
-        <form action="search" method="post">
-            <input class="form-control" type="text" id="_search" name="_search" placeholder="Paieška..." required="required" /><br/>
-            <input class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit" value="Ieškoti" />
-        </form>
+        <ul class="custom-list-group">
+            <li><a href="{{ path('knygmainys_books_show_owned') }}">Turimos knygos</a></li>
+            <li><a href="{{ path('knygmainys_books_show_wanted') }}">Norimos knygos</a></li>
+            <li><a href="{{ path('knygmainys_books_show_contributed') }}">Atiduotos knygos</a></li>
+            <li><a href="{{ path('knygmainys_books_show_received') }}">Gautos knygos</a></li>
+        </ul>
     </div>
 </div>

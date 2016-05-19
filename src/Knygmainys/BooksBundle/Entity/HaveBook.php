@@ -29,14 +29,14 @@ class HaveBook
      * @ORM\Column(name="status", type="string", length=255)
      *
      */
-    private $status;
+    protected $status;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="datetime", type="date")
+     * @ORM\Column(name="created", type="date")
      */
-    private $updated;
+    protected $updated;
 
     /**
      *
@@ -44,7 +44,7 @@ class HaveBook
      * @ORM\JoinColumn(name="book_id", referencedColumnName="id")
      *
      */
-    private $book;
+    protected $book;
 
     /**
      *
@@ -52,7 +52,7 @@ class HaveBook
      * @ORM\JoinColumn(name="release_id", referencedColumnName="id")
      *
      */
-    private $release;
+    protected $release;
 
 
     /**
@@ -61,7 +61,7 @@ class HaveBook
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */
-    private $user;
+    protected $user;
 
     /**
      *
@@ -69,7 +69,7 @@ class HaveBook
      * @ORM\JoinColumn(name="receiver_id", referencedColumnName="id", nullable=true)
      *
      */
-    private $receiver;
+    protected $receiver;
 
     /**
      * Get id

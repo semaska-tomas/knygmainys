@@ -205,11 +205,12 @@ class BookManager
                         )
                     );
             }
+
             $contributor = $bookOffer->getUser();
             $receiver = $bookOffer->getReceiver();
 
-            $contributor->addEarnedPoints(1);
-            $receiver->removePoints(1);
+            $contributor->addEarnedPoints($wantedBook->getPoints());
+            $receiver->removePoints($wantedBook->getPoints());
 
             $wantedBook->setStatus('closed');
             $wantedBook->setContributor($contributor);
@@ -260,40 +261,60 @@ class BookManager
     public function acceptBookRequest(HaveBook $bookRequest)
     {
         try {
-            $message = 'Sveiki, vartotojas '.$bookRequest->getUser()->getFirstName().' priemė Jūsų prašymą knygai - '.$bookRequest->getBook()->getTitle().'.
-            Knyga būs išsiūsta Jūsų profilyje nurodytu adresu.';
-
-            $this->notifications->createNotification('Knygos prašymas priimtas!', $message, '', array( array('id' => $bookRequest->getReceiver()->getId())));
-
             $findWanted = array(
                 'book' => $bookRequest->getBook()->getId(),
                 'user' => $bookRequest->getReceiver()->getId(),
             );
 
-            if ($bookRequest->getRelease() != null) {
+            if ($bookRequest->getRelease()) {
                 $findWanted['release'] = $bookRequest->getRelease()->getId();
             }
 
-            $receiver = $bookRequest->getReceiver();
-            $contributor = $bookRequest->getUser();
+            $findOwned = array(
+                'book' => $bookRequest->getBook()->getId(),
+                'user' => $bookRequest->getUser()->getId()
+            );
 
-            $wantedBook = $this->em->getRepository('KnygmainysBooksBundle:WantBook')->findOneBy($findWanted);
-
-            if ($wantedBook != null ) {
-                $wantedBook->setStatus('closed');
-                $wantedBook->setContributor($contributor);
-                $this->em->persist($wantedBook);
+            if ($bookRequest->getRelease() != null) {
+                $findOwned['release'] = $bookRequest->getRelease()->getId();
             }
 
-            $receiver->removeFromReserve(1);
-            $contributor->addEarnedPoints(1);
-            $bookRequest->setStatus('closed');
-            $this->em->persist($receiver);
-            $this->em->persist($contributor);
-            $this->em->persist($bookRequest);
-            $this->em->flush();
+            $ownedBook = $this->em->getRepository('KnygmainysBooksBundle:HaveBook')->findOneBy($findOwned);
 
-            return 'Prašymas sekmingai priimtas.';
+            $wanted = $this->em->getRepository('KnygmainysBooksBundle:WantBook')->findOneBy($findWanted);
+
+            if ($wanted && $ownedBook) {
+                $receiver = $bookRequest->getReceiver();
+                $contributor = $bookRequest->getUser();
+                $receiver->removeFromReserve($wanted->getPoints());
+                $contributor->addEarnedPoints($wanted->getPoints());
+
+                $ownedBook->setStatus('closed');
+                $ownedBook->setReceiver($receiver);
+                $this->em->persist($ownedBook);
+
+                $wanted->setStatus('closed');
+                $wanted->setContributor($contributor);
+                $bookRequest->setStatus('closed');
+
+                $this->em->persist($wanted);
+                $this->em->persist($receiver);
+                $this->em->persist($contributor);
+                $this->em->persist($bookRequest);
+                $this->em->flush();
+
+                $message = 'Sveiki, vartotojas ' . $bookRequest->getUser()->getFirstName() . ' priemė Jūsų prašymą knygai - ' . $bookRequest->getBook()->getTitle() . '.
+            Knyga būs išsiūsta Jūsų profilyje nurodytu adresu.';
+
+                $this->notifications->createNotification('Knygos prašymas priimtas!', $message, '', array(array('id' => $bookRequest->getReceiver()->getId())));
+
+                return 'Prašymas sekmingai priimtas.';
+            } else {
+                $ownedBook->setStatus('owned');
+                $this->em->persist($ownedBook);
+                $this->em->flush();
+                return 'Norimos knygos vartotojo sąraše nebėra.';
+            }
         } catch (Exception $e) {
             return 'Nepavyko išsaugoti pakeitimų.';
         }
@@ -306,19 +327,13 @@ class BookManager
     public function rejectBookRequest(HaveBook $bookRequest)
     {
         try {
-            $message = 'Sveiki, vartotojas '.$bookRequest->getUser()->getFirstName().' atmetė Jūsų prašymą knygai - '.$bookRequest->getBook()->getTitle().'.
-            Knyga gražinta į turimų knygų sąraša.';
-
-            $receiver = $bookRequest->getReceiver();
-            $receiver->removeFromReserve(1);
-            $receiver->addPoints(1);
-
             $bookRequest->setReceiver(null);
             $bookRequest->setStatus('owned');
 
+            $message = 'Sveiki, vartotojas '.$bookRequest->getUser()->getFirstName().' atmetė Jūsų prašymą knygai - '.$bookRequest->getBook()->getTitle().'.
+            Knyga gražinta į turimų knygų sąraša.';
             $this->notifications->createNotification('Knygos pasiūlymas atmestas!', $message, '', array( array('id' => $bookRequest->getReceiver()->getId())));
 
-            $this->em->persist($receiver);
             $this->em->persist($bookRequest);
             $this->em->flush();
 
@@ -492,6 +507,7 @@ class BookManager
         $this->em->persist($haveBook);
         $this->em->flush();
 
+
         $this->checkWantedListForAddedBook($haveBook);
 
         return true;
@@ -504,8 +520,7 @@ class BookManager
         $wantedBooks = $qb->select('wb')->from('Knygmainys\BooksBundle\Entity\WantBook', 'wb')
             ->where('wb.user != '.$haveBook->getUser()->getId())
             ->andWhere('wb.book = '.$haveBook->getBook()->getId())
-            ->andWhere('wb.status = :status')
-            ->setParameter('status', 'owned')
+            ->andWhere("wb.status = 'wanted'")
             ->getQuery()
             ->getResult();
 
