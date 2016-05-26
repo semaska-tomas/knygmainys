@@ -94,7 +94,13 @@ class BookController extends Controller
 
         if ($form->isValid()) {
             $authors = (array) json_decode($form->get('author')->getData());
-
+            if ($authors == null) {
+                $customErrors['authors'] = 'Pasirinkite knygos autorių.';
+                return $this->render('KnygmainysBooksBundle:Book:create.html.twig', [
+                    'form' => $form->createView(),
+                    'customErrors' => $customErrors
+                ]);
+            }
             foreach($authors as $id=>$authorFullName) {
                 $custom = explode("_", $id);
                 if (count($custom) > 1) {
@@ -375,7 +381,7 @@ class BookController extends Controller
                     if ($points == null) {
                         $points = 1;
                     }
-                    if ($points < $user->getCurrentPoints() && $points >= 0) {
+                    if ($points <= $user->getCurrentPoints() && $points >= 0) {
                         $msg = $bookManager->addWantedBook($user, $bookId, $releaseId, $points);
                     } else {
                         return $bookManager->createJSonResponse('Jūs neturite tiek taškų!', 'failed', 200);
@@ -385,7 +391,7 @@ class BookController extends Controller
                 }
 
                 if ($msg === true) {
-                    return $bookManager->createJSonResponse('Knyga sekmingai pridėta!', 'ok', 200);
+                    return $bookManager->createJSonResponse('Knyga sėkmingai pridėta!', 'ok', 200);
                 }
 
                 return $bookManager->createJSonResponse($msg, 'failed', 200);

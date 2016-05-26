@@ -65,6 +65,9 @@
     <div class="wanted-by-users">
         <div><h3>Vartotojai norintys šios knygos:</h3></div>
         <ul>
+            {% if ownedBy is empty %}
+                <li>Vartotojų, norinčių šios knygos nėra.</li>
+            {% endif %}
             {% for wanted in wantedBy %}
                 <li><a href="{{ path('knygmainys_user_profile', {'id': wanted.user.id})}}">{{ wanted.user.firstName }} {{ wanted.user.firstName }}</a></li>
             {% endfor %}
@@ -73,6 +76,9 @@
     <div class="owned-by-users">
         <div><h3>Vartotojai turintys šią knygą:</h3></div>
         <ul>
+            {% if ownedBy is empty %}
+                <li>Vartotojų, turinčių šią knyga nėra.</li>
+            {% endif %}
             {% for owned in ownedBy %}
                 <li><a href="{{ path('knygmainys_user_profile', {'id': owned.user.id})}}">{{ owned.user.firstName }} {{ owned.user.firstName }}</a></li>
             {% endfor %}

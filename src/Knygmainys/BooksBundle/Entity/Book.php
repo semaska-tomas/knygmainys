@@ -48,7 +48,7 @@ class Book
      *
      * @ORM\Column(name="description", type="text", length=1000)
      *
-     * @Assert\NotBlank(message="Įveskite knygos pavadinimą.")
+     * @Assert\NotBlank(message="Įveskite knygos aprašymą.")
      * @Assert\Length(
      *     min="15",
      *     max="1000",

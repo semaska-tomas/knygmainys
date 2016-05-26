@@ -37,7 +37,11 @@
                 <div id="authorSearch">
                     <input spellcheck="false" class="form-control book-author-search typeahead tt-input" placeholder="Autorių paieška" autocomplete="off" type="text">
                 </div>
-
+                {% if customErrors is not empty %}
+                    <ul>
+                        <li>{{ customErrors['authors'] }}</li>
+                    </ul>
+                {% endif %}
                 <ul id="authors">
 
                 </ul>

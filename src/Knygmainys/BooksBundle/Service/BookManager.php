@@ -385,7 +385,9 @@ class BookManager
     {
         $qb = $this->em->createQueryBuilder();
         $results = $qb->select('r')->from('Knygmainys\BooksBundle\Entity\Release', 'r')
+            ->leftJoin('r.bookRelease', 'br')
             ->where( $qb->expr()->like('r.isbn', $qb->expr()->literal('%' . $isbn . '%')) )
+            ->andWhere('br.book = '.$book)
             ->getQuery()
             ->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -490,7 +492,7 @@ class BookManager
             ));
 
         if ($ownedBook) {
-            return false;
+            return 'Tokia knyga jau yra Jūsų turimų knygų sąraše.';
         }
 
         $haveBook = new HaveBook();

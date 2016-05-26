@@ -29,9 +29,9 @@ class Release
      * @Assert\NotBlank(message="Įveskite knygos ISBN numerį.")
      * @Assert\Length(
      *     min="10",
-     *     max="100",
-     *     minMessage="Jūsų įvestas knygos pavadinimas per trumpas.",
-     *     maxMessage="Jūsų įvestas knygos pavadinimas per ilgas."
+     *     max="30",
+     *     minMessage="Jūsų įvestas knygos leidimo numeris per trumpas.",
+     *     maxMessage="Jūsų įvestas knygos leidimo numeris per ilgas."
      * )
      * @Assert\Regex(
      *        pattern="/[a-zA-Z0-9\-]/",
@@ -66,8 +66,8 @@ class Release
      *
      * @Assert\NotBlank(message="Įveskite knygos leidyklos pavadinimą.")
      * @Assert\Length(
-     *     min="3",
-     *     max="255",
+     *     min="5",
+     *     max="50",
      *     minMessage="Jūsų įvestas knygos leidyklos pavadinimas per trumpas.",
      *     maxMessage="Jūsų įvestas knygos leidyklos pavadinimas per ilgas."
      * )

@@ -117,21 +117,21 @@ class User extends BaseUser
      *
      * @ORM\Column(name="current_points", type="integer", options={"default" : 3})
      */
-    protected $currentPoints;
+    protected $currentPoints = 3;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="reserved_points", type="integer", options={"default" : 0})
      */
-    protected $reservedPoints;
+    protected $reservedPoints = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="total_points", type="integer", options={"default" : 3})
      */
-    protected $totalPoints;
+    protected $totalPoints = 3;
 
     /**
      * book owned association

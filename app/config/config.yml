@@ -94,7 +94,7 @@ fos_user:
         form:
             type: knygmainys_user_registration
         confirmation:
-            enabled:    true
+            enabled:    false
     from_email:
         address:        info@knygmainys.lt
         sender_name:    Knygmainys.lt
